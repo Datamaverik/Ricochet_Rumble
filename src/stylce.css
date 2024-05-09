@@ -1,0 +1,111 @@
+:root.light {
+  --base-bg: rgb(203, 201, 201);
+  --base-color: rgb(29, 32, 31);
+
+  --navbar-bg: hsl(0, 0%, 88%);
+  --navbar-btn-border: 2px solid rgb(10, 131, 10);
+  --navbar-btn-box-shadow: inset 2px 2px 5px rgba(10, 131, 10, 0.5),
+    2px 2px 5px black;
+  --navbar-hover-color: rgb(230, 255, 222);
+  --navbar-hover-text-shadow: 1px 1px 0px rgb(5, 76, 5),
+    0px 0px 6px rgb(10, 116, 10);
+
+  --filter-invert: invert(0%);
+
+  --footer-color: ;
+
+  --to-do-container-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.534);
+}
+
+:root.dark {
+  --base-bg: rgb(29, 32, 31);
+  --base-color: rgb(193, 193, 193);
+
+  --navbar-bg: hsl(150, 4%, 9%);
+  --navbar-btn-border: 2px solid green;
+  --navbar-btn-box-shadow: inset 2px 2px 5px rgba(10, 131, 10, 0.688),
+    2px 2px 5px rgba(0, 0, 0, 0.459);
+  --navbar-hover-color: hsl(0, 0%, 88%);
+  --navbar-hover-text-shadow: 0px 0px 6px rgb(10, 131, 10);
+
+  --filter-invert: invert(100%);
+
+  --footer-color: ;
+
+  --to-do-container-box-shadow: 2px 2px 5px rgba(154, 154, 154, 0.503);
+}
+
+body {
+  margin: 0px;
+  color: var(--base-color);
+  background-color: var(--base-bg);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.navbar,
+.footer {
+  display: flex;
+  background-color: var(--navbar-bg);
+  padding: 20px;
+  margin-bottom: 0px;
+  color: var(--base-color);
+  box-shadow: 0px 3px 1px rgb(10, 131, 10);
+  z-index: 1000;
+}
+.navbar {
+  position: sticky;
+  top: 0px;
+  justify-content: space-between;
+}
+.navbar h1 {
+  margin: 0px;
+}
+.navbar button {
+  background-color: transparent;
+  color: var(--base-color);
+  padding: 10px 20px;
+  font-size: large;
+  margin: 0px;
+  border: var(--navbar-btn-border);
+  border-radius: 5px;
+  box-shadow: var(--navbar-btn-box-shadow);
+}
+.navbar button:hover {
+  cursor: pointer;
+  color: var(--navbar-hover-color);
+  text-shadow: var(--navbar-hover-text-shadow);
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0px;
+}
+
+.game-board {
+  border: 10px solid rgb(85, 85, 85);
+  margin: 20px;
+  display: grid;
+  grid-template-columns: repeat(8, 50px);
+  grid-template-rows: repeat(8, 50px);
+}
+
+.footer {
+  padding: 10px;
+  display: flex;
+  width: 100%;
+  position: fixed;
+  justify-content: center;
+  bottom: 0px;
+}
+#git-link {
+  background-image: url(./assets/github-mark.png);
+  display: inline-block;
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+  filter: var(--filter-invert);
+}
