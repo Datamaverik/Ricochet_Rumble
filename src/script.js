@@ -1,18 +1,23 @@
 import { createGameBoard, changeTheme } from "./utility-function.mjs";
-import { addPieces, remPieces } from "./add-pieces.mjs";
+import { addTitan, addTank, remPieces } from "./add-pieces.mjs";
 import { validateMove, checkMoves } from "./move-validation.mjs";
 
 const gameBoard = document.querySelector(".game-board");
 
 let selectedPiece = "",
   tileToRemove,
-  titanP1;
+  titanP1,
+  tankP1,
+  piceToMove;
 
+export let occupiedTiles = [2, 6];
 //created the gameboard
 createGameBoard(gameBoard);
 const squares = document.querySelectorAll(".square");
+
 //adding pieces in the game board
-addPieces(squares, "titan", 6);
+addTitan(squares, "titan", 6, "red");
+addTitan(squares, "tank", 2, "blue");
 
 //highlighting the available tiles where player can move
 checkMoves(gameBoard, squares);
@@ -29,18 +34,36 @@ gameBoard.addEventListener("click", (e) => {
   if (e.target.classList.contains("highlighted")) {
     const tileId = e.target.id;
 
-    Array.from(squares).forEach((square) => {
-      if (square.childElementCount > 0) {
-        tileToRemove = square.id;
-      }
-    });
+    if (selectedPiece !== "") {
+      piceToMove = document.getElementById(selectedPiece);
+    }
 
-    remPieces(squares, tileToRemove);//remove piece from old tile
-    addPieces(squares, selectedPiece, tileId);//add piece to new tile
+    tileToRemove = piceToMove.parentNode.id;
 
-    //adding event listener to the newly created titan
-    titanP1 = document.getElementById("titan");
-    validateMove(titanP1, squares);
+    if (selectedPiece == "titan") {
+      remPieces(squares, tileToRemove);
+      occupiedTiles = occupiedTiles.filter(
+        (tile) => tile !== parseInt(tileToRemove)
+      );
+      addTitan(squares, selectedPiece, tileId, "red");
+      occupiedTiles.push(parseInt(tileId));
+      //adding event listener to the newly created titan
+      titanP1 = document.getElementById("titan");
+      validateMove(titanP1, squares);
+      selectedPiece = "";
+    }
+    if (selectedPiece == "tank") {
+      remPieces(squares, tileToRemove); //remove piece from old tile
+      occupiedTiles = occupiedTiles.filter(
+        (tile) => tile !== parseInt(tileToRemove)
+      );
+      addTank(squares, selectedPiece, tileId, "blue");
+      occupiedTiles.push(parseInt(tileId));
+      //adding event listener to the newly created tank
+      tankP1 = document.getElementById("tank");
+      validateMove(tankP1, squares);
+      selectedPiece = "";
+    }
 
     //Removing highlights after moving
     Array.from(squares).forEach((square) => {
@@ -54,6 +77,9 @@ gameBoard.addEventListener("click", (e) => {
 //accessing titan of player 1
 titanP1 = document.getElementById("titan");
 validateMove(titanP1, squares);
+//accessing tank of player 1
+tankP1 = document.getElementById("tank");
+validateMove(tankP1, squares);
 
 //setting the initial theme
 document.documentElement.className = "dark";

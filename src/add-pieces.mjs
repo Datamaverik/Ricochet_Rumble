@@ -1,23 +1,33 @@
-export function addPieces(squares,id,tileId){
-    Array.from(squares).forEach(square =>{
-        //adding titan
-        if(square.id==tileId){
-            const titan = document.createElement('div');
-            titan.setAttribute("id",id);
-            titan.classList.add('pieces');
-            titan.style.backgroundColor='red';
-            titan.textContent='Titan';
-            square.appendChild(titan);
-        }
-    })
+export function addTitan(squares, id, tileId,color) {
+  Array.from(squares).forEach((square) => {
+    if (square.id == tileId) {
+      const piece = document.createElement("div");
+      piece.setAttribute("id", id);
+      piece.classList.add("pieces");
+      piece.style.backgroundColor = color;
+      piece.textContent = id;
+      square.appendChild(piece);
+    }
+  });
 }
 
-export function remPieces(squares,tileId){
-    console.log(tileId);
-    Array.from(squares).forEach(square=>{
-        if(square.id==tileId){
-            square.innerHTML="";
-            console.log('removed');
-        }
-    })
+export function addTank(squares,id,tileId,color){
+    Array.from(squares).forEach((square) => {
+      if (square.id == tileId) {
+        const piece = document.createElement("div");
+        piece.setAttribute("id", id);
+        piece.classList.add("pieces");
+        piece.style.backgroundColor = color;
+        piece.textContent = id;
+        square.appendChild(piece);
+      }
+    });
+}
+
+export function remPieces(squares, tileId) {
+  Array.from(squares).forEach((square) => {
+    if (square.id == tileId) {
+      square.innerHTML = "";
+    }
+  });
 }

@@ -1,5 +1,12 @@
+import { occupiedTiles } from "./script.js";
+
 export function validateMove(piece, board) {
   piece.addEventListener("click", (e) => {
+    Array.from(board).forEach((square) => {
+      if (square.classList.contains("highlighted")) {
+        square.classList.remove("highlighted");
+      }
+    });
     let m, l;
     const k = parseInt(e.target.parentNode.id);
     if (k - 8 > 0) m = k - 8;
@@ -16,9 +23,7 @@ export function validateMove(piece, board) {
           square.id == l - 1 ||
           square.id == l
         ) {
-          if (square.classList.contains("highlighted"))
-            square.classList.remove("highlighted");
-          else square.classList.add("highlighted");
+          square.classList.add("highlighted");
         }
       });
     } else if (k % 8 === 1) {
@@ -31,9 +36,7 @@ export function validateMove(piece, board) {
           square.id == k ||
           square.id == l
         ) {
-          if (square.classList.contains("highlighted"))
-            square.classList.remove("highlighted");
-          else square.classList.add("highlighted");
+          square.classList.add("highlighted");
         }
       });
     } else {
@@ -49,29 +52,35 @@ export function validateMove(piece, board) {
           square.id == k + 1 ||
           square.id == l + 1
         ) {
-          if (square.classList.contains("highlighted"))
-            square.classList.remove("highlighted");
-          else square.classList.add("highlighted");
+          square.classList.add("highlighted");
+        }
+      });
+    }
+    Array.from(board).forEach((square) => {
+      occupiedTiles.forEach((tile) => {
+        if (square.id == tile && square.classList.contains("highlighted")) {
+          square.classList.remove("highlighted");
+        }
+      });
+    });
+  });
+}
+
+export function checkMoves(gameBoard, squares, id) {
+  gameBoard.addEventListener("click", (e) => {
+    //checking moves for titan
+    if (
+      e.target.classList.contains("highlighted") ||
+      e.target.childCount > 0 ||
+      e.target.id == "titan" ||
+      e.target.id == "tank"
+    ) {
+    } else {
+      Array.from(squares).forEach((square) => {
+        if (square.classList.contains("highlighted")) {
+          square.classList.remove("highlighted");
         }
       });
     }
   });
-}
-
-export function checkMoves(gameBoard,squares){
-    gameBoard.addEventListener("click", (e) => {
-        //checking moves for titan
-      if (
-        e.target.classList.contains("highlighted") ||
-        e.target.childCount > 0 ||
-        e.target.id == "titan"
-      ) {
-      } else {
-        Array.from(squares).forEach((square) => {
-          if (square.classList.contains("highlighted")) {
-            square.classList.remove("highlighted");
-          }
-        });
-      }
-    });
 }
