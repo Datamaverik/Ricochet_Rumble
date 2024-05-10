@@ -1,3 +1,4 @@
+//create and append the gameboard in the container
 export function createGameBoard(board) {
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
@@ -16,11 +17,7 @@ export function createGameBoard(board) {
   }
 }
 
-
-export function addPieces(board){
-    
-}
-
+//toggle the theme from dark to light and vice-versa
 export function changeTheme() {
   const root = document.documentElement;
   const newTheme = root.className === "dark" ? "light" : "dark";
