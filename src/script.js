@@ -1,5 +1,5 @@
 import { createGameBoard, changeTheme } from "./utility-function.mjs";
-import { addTitan, addTank, remPieces } from "./add-pieces.mjs";
+import { addPiece, remPieces } from "./add-pieces.mjs";
 import { validateMove, checkMoves } from "./move-validation.mjs";
 
 const gameBoard = document.querySelector(".game-board");
@@ -10,14 +10,14 @@ let selectedPiece = "",
   tankP1,
   piceToMove;
 
-export let occupiedTiles = [2, 6];
+export let occupiedTiles = [2, 6,12];
 //created the gameboard
 createGameBoard(gameBoard);
 const squares = document.querySelectorAll(".square");
 
 //adding pieces in the game board
-addTitan(squares, "titan", 6, "red");
-addTitan(squares, "tank", 2, "blue");
+addPiece(squares, "titan", 6, "red");
+addPiece(squares, "tank", 2, "blue");
 
 //highlighting the available tiles where player can move
 checkMoves(gameBoard, squares);
@@ -45,7 +45,7 @@ gameBoard.addEventListener("click", (e) => {
       occupiedTiles = occupiedTiles.filter(
         (tile) => tile !== parseInt(tileToRemove)
       );
-      addTitan(squares, selectedPiece, tileId, "red");
+      addPiece(squares, selectedPiece, tileId, "red");
       occupiedTiles.push(parseInt(tileId));
       //adding event listener to the newly created titan
       titanP1 = document.getElementById("titan");
@@ -57,7 +57,7 @@ gameBoard.addEventListener("click", (e) => {
       occupiedTiles = occupiedTiles.filter(
         (tile) => tile !== parseInt(tileToRemove)
       );
-      addTank(squares, selectedPiece, tileId, "blue");
+      addPiece(squares, selectedPiece, tileId, "blue");
       occupiedTiles.push(parseInt(tileId));
       //adding event listener to the newly created tank
       tankP1 = document.getElementById("tank");
