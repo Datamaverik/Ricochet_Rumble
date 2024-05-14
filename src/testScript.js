@@ -5,6 +5,9 @@ import { changeTheme } from "./utility-function.mjs";
 let selectedPiece = "",
   tileId,
   piceToMove;
+
+const playerToMove = document.getElementById("player-to-move");
+
 // Get the game board element
 const gameBoard = document.querySelector(".game-board");
 
@@ -28,6 +31,7 @@ game.addPiece("semi-ricochet-P2", "#2d578e", 54);
 game.addPiece("cannon-P2", "darkBlue", 63);
 
 gameBoard.addEventListener("click", (e) => {
+  playerToMove.textContent = "Player to Move: "+game.PlayerToMove;
   const newSelectedPiece = e.target.id;
   // console.log("selected Piece " + selectedPiece);
 
@@ -49,7 +53,10 @@ gameBoard.addEventListener("click", (e) => {
       game.removeHighlights(gameBoard.querySelectorAll(".square"));
     }
   } else game.removeHighlights(gameBoard.querySelectorAll(".square"));
+  playerToMove.textContent = "Player to Move: "+game.PlayerToMove;
 });
+
+playerToMove.textContent = "Player to Move: "+game.PlayerToMove;
 
 //setting up the initial theme
 document.documentElement.className = "dark";
