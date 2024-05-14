@@ -10,7 +10,7 @@ let selectedPiece = "",
   tankP1,
   piceToMove;
 
-export let occupiedTiles = [2, 6,12];
+export let occupiedTiles = [2, 6];
 //created the gameboard
 createGameBoard(gameBoard);
 const squares = document.querySelectorAll(".square");

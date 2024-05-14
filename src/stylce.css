@@ -10,16 +10,14 @@
   --navbar-hover-text-shadow: 1px 1px 0px rgb(5, 76, 5),
     0px 0px 6px rgb(10, 116, 10);
 
-    --board-text-shadow: 0px 0px 3px rgb(255, 255, 255);
-    --board-box-shadow:inset 2px 2px 4px rgb(31, 31, 31), inset -2px -2px 4px  rgb(31, 31, 31);
-
-
+  --board-text-shadow: 0px 0px 3px rgb(255, 255, 255);
+  --board-box-shadow: inset 2px 2px 4px rgb(31, 31, 31),
+    inset -2px -2px 4px rgb(31, 31, 31);
 
   --footer-color: ;
 
   --to-do-container-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.534);
 }
-
 
 :root.dark {
   --base-bg: rgb(29, 32, 31);
@@ -32,8 +30,9 @@
   --navbar-hover-color: hsl(0, 0%, 88%);
   --navbar-hover-text-shadow: 0px 0px 6px rgb(10, 131, 10);
 
-  --board-text-shadow:0px 0px 3px rgb(0, 0, 0);
-  --board-box-shadow:inset 2px 2px 4px rgb(204, 204, 204), inset -2px -2px 4px  rgb(204, 204, 204);
+  --board-text-shadow: 0px 0px 3px rgb(0, 0, 0);
+  --board-box-shadow: inset 2px 2px 4px rgb(204, 204, 204),
+    inset -2px -2px 4px rgb(204, 204, 204);
 
   --filter-invert: invert(100%);
 
@@ -98,14 +97,14 @@ body {
   grid-template-columns: repeat(8, 60px);
   grid-template-rows: repeat(8, 60px);
 }
-.square{
+.square {
   padding: 3px;
   overflow: hidden;
 }
-.highlighted{
+.highlighted {
   box-shadow: var(--board-box-shadow);
 }
-.pieces{
+.pieces {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -113,6 +112,8 @@ body {
   text-shadow: var(--board-text-shadow);
   width: 100%;
   height: 100%;
+  
+
 }
 
 .footer {
