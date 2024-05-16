@@ -1,4 +1,3 @@
-
 //toggle the theme from dark to light and vice-versa
 export function changeTheme() {
   const root = document.documentElement;
@@ -9,7 +8,9 @@ export function changeTheme() {
   themeButton.textContent = currentTheme;
 }
 
-
-export const Icons={
-  titan:'titan-P1',
-}
+export const Icons = {
+  titan: `<a href="https://iconscout.com/icons/castle" class="text-underline font-size-sm" target="_blank">castle</a>`,
+  tank: `<a href="https://iconscout.com/icons/jeep" class="text-underline font-size-sm" target="_blank">Jeep</a>`,
+  ricochet: `<a href="https://iconscout.com/icons/jeep" class="text-underline font-size-sm" target="_blank">Jeep</a>`,
+  semiRicochet: `<a href="https://iconscout.com/icons/ship" class="text-underline font-size-sm" target="_blank">Ship</a>`,
+};

@@ -20,18 +20,18 @@ game.createGameBoard();
 game.addPiece("titan-P1", "#730101", 6);
 game.addPiece("tank-P1", "#b61515", 13);
 game.addPiece("ricochet-P1", "#ff3e3e", 4);
-game.addPiece("semi-ricochet-P1", "#a35353", 11);
+game.addPiece("semiRicochet-P1", "#a35353", 11);
 game.addPiece("cannon-P1", "brown", 2);
 
 //Adding pieces for player 2
 game.addPiece("titan-P2", "#003b88", 59);
 game.addPiece("tank-P2", "#005ed8", 52);
 game.addPiece("ricochet-P2", "#4394ff", 61);
-game.addPiece("semi-ricochet-P2", "#2d578e", 54);
+game.addPiece("semiRicochet-P2", "#2d578e", 54);
 game.addPiece("cannon-P2", "darkBlue", 63);
 
 gameBoard.addEventListener("click", (e) => {
-  playerToMove.textContent = "Player to Move: "+game.PlayerToMove;
+  playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
   const newSelectedPiece = e.target.id;
   // console.log("selected Piece " + selectedPiece);
 
@@ -53,10 +53,10 @@ gameBoard.addEventListener("click", (e) => {
       game.removeHighlights(gameBoard.querySelectorAll(".square"));
     }
   } else game.removeHighlights(gameBoard.querySelectorAll(".square"));
-  playerToMove.textContent = "Player to Move: "+game.PlayerToMove;
+  playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 });
 
-playerToMove.textContent = "Player to Move: "+game.PlayerToMove;
+playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 
 //setting up the initial theme
 document.documentElement.className = "dark";

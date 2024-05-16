@@ -84,7 +84,7 @@ body {
 }
 
 #player-to-move{
-  margin: 10px;
+  margin-top: 10px;
   font-size: x-large;
   text-align: center;
 }

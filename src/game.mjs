@@ -33,13 +33,19 @@ export default class Game {
   }
 
   movePiece(selectedPieceId, targetTileId) {
-    console.log(this.PlayerToMove);
-    console.log(selectedPieceId.slice(-2));
     const piece = this.pieces.find((piece) => piece.id === selectedPieceId);
     if (piece && this.PlayerToMove == selectedPieceId.slice(-2)) {
       piece.movePiece(targetTileId);
+      //searching for all the cannons to shoot after move has been made
+      this.pieces.forEach((piece) => {
+        if (piece.id.slice(-2) == this.PlayerToMove) {
+          if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+            piece.shootCannon();
+          }
+        }
+      });
     }
-    //setting the player to move property for the next move
+    //setting the playerToMove property for the next move
     if (selectedPieceId.slice(-2) == "P1") {
       this.PlayerToMove = "P2";
     } else {

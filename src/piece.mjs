@@ -1,4 +1,5 @@
-// piece.js
+import { Icons } from "./utility-function.mjs";
+
 export default class Piece {
   constructor(id, color) {
     this.id = id;
@@ -8,9 +9,11 @@ export default class Piece {
 
   addPieceToBoard(board, tileId) {
     // Create the piece element and append it to the board
+    // console.log(Icons[this.id.slice(0, -3)]);
     const piece = document.createElement("div");
     piece.setAttribute("id", this.id);
     piece.classList.add("pieces");
+    // piece.innerHTML = Icons[this.id.slice(0,-3)];
     piece.style.backgroundColor = this.color;
     piece.textContent = this.id.slice(0, -3);
     Array.from(board.querySelectorAll(".square")).forEach((square) => {
@@ -40,5 +43,10 @@ export default class Piece {
     if (targetTile && this.canMoveToTile(targetTileId)) {
       targetTile.appendChild(this.element);
     }
+  }
+
+  shootCannon() {
+    console.log(this.element);
+    console.log("shot");
   }
 }
