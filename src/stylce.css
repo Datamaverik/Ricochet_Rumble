@@ -106,6 +106,9 @@ body {
 .square {
   padding: 3px;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .highlighted {
   box-shadow: var(--board-box-shadow);
@@ -120,6 +123,11 @@ body {
   height: 100%;
 
 
+}
+.cannonball{
+  border-radius: 5px;
+  height: 20px;
+  width: 20px;
 }
 
 .footer {

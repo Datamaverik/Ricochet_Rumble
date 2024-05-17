@@ -46,7 +46,39 @@ export default class Piece {
   }
 
   shootCannon() {
-    console.log(this.element);
-    console.log("shot");
+    let cannonTile = parseInt(this.element.parentNode.id);
+    if (cannonTile < 9) {
+      for (let i = 0; i < 7 && cannonTile < 65; i++) {
+        setTimeout(() => {
+          cannonTile = cannonTile + 8;
+          // console.log(cannonTile);
+          this.moveCannonBall(cannonTile);
+        }, i * 300);
+      }
+    } else if (cannonTile > 56) {
+      for (let i = 0; i < 7 && cannonTile > 0; i++) {
+        setTimeout(() => {
+          cannonTile = cannonTile - 8;
+          // console.log(cannonTile);
+          this.moveCannonBall(cannonTile);
+        }, i * 300);
+      }
+    }
+  }
+
+  moveCannonBall(tileId) {
+    const cannonBall = document.createElement("div");
+    cannonBall.classList.add("cannonball");
+    cannonBall.style.backgroundColor = "green";
+    // console.log(document.getElementById(tileId));
+    console.log(cannonBall);
+    document.getElementById(tileId).appendChild(cannonBall);
+
+    setTimeout(() => {
+      if (cannonBall.parentNode) {
+        cannonBall.parentNode.removeChild(cannonBall);
+        console.log("removed");
+      }
+    }, 300);
   }
 }
