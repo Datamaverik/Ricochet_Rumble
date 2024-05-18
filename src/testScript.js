@@ -33,6 +33,7 @@ game.addPiece("cannon-P2", "darkBlue", 63);
 gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
   const newSelectedPiece = e.target.id;
+  console.log(e.target.parentNode);
   // console.log("selected Piece " + selectedPiece);
 
   //checking if a valid piece is selected
@@ -45,7 +46,6 @@ gameBoard.addEventListener("click", (e) => {
     );
   } else if (e.target.classList.contains("highlighted")) {
     tileId = e.target.id;
-    // console.log("tileId " + tileId);
 
     if (selectedPiece !== "") {
       piceToMove = document.getElementById(selectedPiece);

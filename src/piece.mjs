@@ -5,6 +5,7 @@ export default class Piece {
     this.id = id;
     this.color = color;
     this.element = null;
+    this.timeOutIds = [];
   }
 
   addPieceToBoard(board, tileId) {
@@ -49,18 +50,24 @@ export default class Piece {
     let cannonTile = parseInt(this.element.parentNode.id);
     if (cannonTile < 9) {
       for (let i = 0; i < 7 && cannonTile < 65; i++) {
-        setTimeout(() => {
+        this.timeOutIds[i] = setTimeout(() => {
           cannonTile = cannonTile + 8;
-          // console.log(cannonTile);
           this.moveCannonBall(cannonTile);
+          if (this.detectCollison(cannonTile)) {
+            this.clearAllTimeouts();
+            return;
+          }
         }, i * 300);
       }
     } else if (cannonTile > 56) {
       for (let i = 0; i < 7 && cannonTile > 0; i++) {
-        setTimeout(() => {
+        this.timeOutIds[i] = setTimeout(() => {
           cannonTile = cannonTile - 8;
-          // console.log(cannonTile);
           this.moveCannonBall(cannonTile);
+          if (this.detectCollison(cannonTile)) {
+            this.clearAllTimeouts();
+            return;
+          }
         }, i * 300);
       }
     }
@@ -71,14 +78,37 @@ export default class Piece {
     cannonBall.classList.add("cannonball");
     cannonBall.style.backgroundColor = "green";
     // console.log(document.getElementById(tileId));
-    console.log(cannonBall);
+    // console.log(cannonBall);
     document.getElementById(tileId).appendChild(cannonBall);
 
     setTimeout(() => {
       if (cannonBall.parentNode) {
         cannonBall.parentNode.removeChild(cannonBall);
-        console.log("removed");
+        // console.log("removed");
       }
     }, 300);
+  }
+
+  detectCollison(tileId) {
+    const targetTile = document.getElementById(tileId);
+    if (targetTile && targetTile.hasChildNodes()) {
+      const firstChild = targetTile.firstChild;
+      if (
+        firstChild &&
+        firstChild.classList.contains("pieces") &&
+        firstChild.id.slice(0, -3) !== "cannon"
+      ) {
+        console.log(firstChild);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  clearAllTimeouts(){
+    this.timeOutIds.forEach(ID=>{
+      clearTimeout(ID);
+    })
+    this.timeOutIds=[];
   }
 }
