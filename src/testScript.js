@@ -33,8 +33,7 @@ game.addPiece("cannon-P2", "darkBlue", 63);
 gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
   const newSelectedPiece = e.target.id;
-  console.log(e.target.parentNode);
-  // console.log("selected Piece " + selectedPiece);
+  // console.log(e.target.parentNode);
 
   //checking if a valid piece is selected
   if (isNaN(parseInt(newSelectedPiece))) {

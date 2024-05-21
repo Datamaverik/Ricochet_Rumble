@@ -6,6 +6,7 @@ export default class Piece {
     this.color = color;
     this.element = null;
     this.timeOutIds = [];
+    this.cannonDirection = "down";
   }
 
   addPieceToBoard(board, tileId) {
@@ -23,7 +24,6 @@ export default class Piece {
       }
     });
     this.element = piece;
-    // console.log(this.element);
   }
 
   removePieceFromBoard() {
@@ -48,28 +48,20 @@ export default class Piece {
 
   shootCannon() {
     let cannonTile = parseInt(this.element.parentNode.id);
-    if (cannonTile < 9) {
-      for (let i = 0; i < 7 && cannonTile < 65; i++) {
-        this.timeOutIds[i] = setTimeout(() => {
-          cannonTile = cannonTile + 8;
-          this.moveCannonBall(cannonTile);
-          if (this.detectCollison(cannonTile)) {
-            this.clearAllTimeouts();
-            return;
-          }
-        }, i * 300);
-      }
-    } else if (cannonTile > 56) {
-      for (let i = 0; i < 7 && cannonTile > 0; i++) {
-        this.timeOutIds[i] = setTimeout(() => {
-          cannonTile = cannonTile - 8;
-          this.moveCannonBall(cannonTile);
-          if (this.detectCollison(cannonTile)) {
-            this.clearAllTimeouts();
-            return;
-          }
-        }, i * 300);
-      }
+    if (cannonTile < 9) this.cannonDirection = "down";
+    if (cannonTile > 56) this.cannonDirection = "up";
+    for (let i = 0; i < 64; i++) {
+      this.timeOutIds[i] = setTimeout(() => {
+        if (this.cannonDirection == "down") cannonTile = cannonTile + 8;
+        if (this.cannonDirection == "up") cannonTile = cannonTile - 8;
+        if (this.cannonDirection == "left") cannonTile = cannonTile - 1;
+        if (this.cannonDirection == "right") cannonTile = cannonTile + 1;
+        this.moveCannonBall(cannonTile);
+        if (this.detectCollison(cannonTile)) {
+          this.clearAllTimeouts();
+          return;
+        }
+      }, i * 200);
     }
   }
 
@@ -77,16 +69,14 @@ export default class Piece {
     const cannonBall = document.createElement("div");
     cannonBall.classList.add("cannonball");
     cannonBall.style.backgroundColor = "green";
-    // console.log(document.getElementById(tileId));
-    // console.log(cannonBall);
+
     document.getElementById(tileId).appendChild(cannonBall);
 
     setTimeout(() => {
       if (cannonBall.parentNode) {
         cannonBall.parentNode.removeChild(cannonBall);
-        // console.log("removed");
       }
-    }, 300);
+    }, 200);
   }
 
   detectCollison(tileId) {
@@ -96,19 +86,33 @@ export default class Piece {
       if (
         firstChild &&
         firstChild.classList.contains("pieces") &&
-        firstChild.id.slice(0, -3) !== "cannon"
+        firstChild.id.slice(0, -3) !== "cannon" &&
+        firstChild.id.slice(0, -3) !== "semiRicochet" &&
+        firstChild.id.slice(0, -3) !== "ricochet"
       ) {
-        console.log(firstChild);
         return true;
       }
+      if (
+        firstChild.id.slice(0, -3) == "ricochet" ||
+        firstChild.id.slice(0, -3) == "semiRicochet"
+      ) {
+        this.cannonDirection = "left";
+      }
+    }
+    if (tileId % 8 == 0 || tileId % 8 == 1 || tileId<9 || tileId>56) {
+      return true;
     }
     return false;
   }
 
-  clearAllTimeouts(){
-    this.timeOutIds.forEach(ID=>{
+  changeDirection() {
+    let cannonTile = parseInt(this.element.parentNode.id);
+  }
+
+  clearAllTimeouts() {
+    this.timeOutIds.forEach((ID) => {
       clearTimeout(ID);
-    })
-    this.timeOutIds=[];
+    });
+    this.timeOutIds = [];
   }
 }
