@@ -9,7 +9,7 @@ export function changeTheme() {
 }
 
 export const Icons = {
-  titan: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="height: 512px; width: 512px;"><rect fill="#000" fill-opacity="1" height="512" width="512" rx="32" ry="32"></rect><g class="" transform="translate(0,0)" style=""><path d="M255.95 27.11L180.6 107.614l150.7 1.168-75.35-81.674h-.003zM25 109.895v68.01l19.412 25.99h71.06l19.528-26v-68h-14v15.995h-18v-15.994H89v15.995H71v-15.994H57v15.995H39v-15.994H25zm352 0v68l19.527 26h71.06L487 177.906v-68.01h-14v15.995h-18v-15.994h-14v15.995h-18v-15.994h-14v15.995h-18v-15.994h-14zm-176 15.877V260.89h110V126.63l-110-.857zm55 20.118c8 0 16 4 16 12v32h-32v-32c0-8 8-12 16-12zM41 221.897V484.89h78V221.897H41zm352 0V484.89h78V221.897h-78zM56 241.89c4 0 8 4 8 12v32H48v-32c0-8 4-12 8-12zm400 0c4 0 8 4 8 12v32h-16v-32c0-8 4-12 8-12zm-303 37v23h-16v183h87v-55c0-24 16-36 32-36s32 12 32 36v55h87v-183h-16v-23h-14v23h-18v-23h-14v23h-18v-23h-14v23h-18v-23h-14v23h-18v-23h-14v23h-18v-23h-14v23h-18v-23h-14zm-49 43c4 0 8 4 8 12v32H96v-32c0-8 4-12 8-12zm72 0c8 0 16 4 16 12v32h-32v-32c0-8 8-12 16-12zm80 0c8 0 16 4 16 12v32h-32v-32c0-8 8-12 16-12zm80 0c8 0 16 4 16 12v32h-32v-32c0-8 8-12 16-12zm72 0c4 0 8 4 8 12v32h-16v-32c0-8 4-12 8-12zm-352 64c4 0 8 4 8 12v32H48v-32c0-8 4-12 8-12zm400 0c4 0 8 4 8 12v32h-16v-32c0-8 4-12 8-12z" fill="#fff" fill-opacity="1"></path></g></svg>`,
+  titan: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><style>.cls-1{fill:#1e0f00}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="_1" data-name="1"><path class="cls-1" d="M37 11H11a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v3h3V1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3h3V1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1zM12 9h24V2h-3v3a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V2h-4v3a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V2h-3zM0 46h48v2H0z"/><path class="cls-1" d="M33 48H15a1 1 0 0 1-1-1V15a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v32a1 1 0 0 1-1 1zm-17-2h16V16H16z"/><path class="cls-1" d="M28 48h-8a1 1 0 0 1-1-1V37a5 5 0 0 1 10 0v10a1 1 0 0 1-1 1zm-7-2h6v-9a3 3 0 0 0-6 0zM28 29h-8a1 1 0 0 1-1-1v-4a5 5 0 0 1 10 0v4a1 1 0 0 1-1 1zm-7-2h6v-3a3 3 0 0 0-6 0zM35 16H13a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h22a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1zm-21-2h20v-3H14zM13 32H1a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v3h3v-3a1 1 0 0 1 1-1h2v2h-1v3a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-3H2v7h11z"/><path class="cls-1" d="M2 31h2v16H2zM47 32H35v-2h11v-7h-3v3a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-3h-1v-2h2a1 1 0 0 1 1 1v3h3v-3a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1z"/><path class="cls-1" d="M44 31h2v16h-2z"/></g></g></svg>`,
   tank: `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -264,3 +264,10 @@ export const Icons = {
 </svg>
 `,
 };
+
+export function addClasses() {
+  document.getElementById("ricochet-P1").classList.add("right");
+  document.getElementById("semiRicochet-P1").classList.add("right");
+  document.getElementById("ricochet-P2").classList.add("left");
+  document.getElementById("semiRicochet-P2").classList.add("left");
+}

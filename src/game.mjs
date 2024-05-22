@@ -153,4 +153,53 @@ export default class Game {
       }
     });
   }
+
+  rotatePiece(selectedPiece, board) {
+    if (this.PlayerToMove == selectedPiece.slice(-2)) {
+      let pieceToRotate = document.getElementById(selectedPiece);
+      let orientation = pieceToRotate.style.transform;
+
+      if (pieceToRotate.classList.contains("left")) {
+        pieceToRotate.classList.remove("left");
+        pieceToRotate.classList.add("right");
+
+        if (orientation == "scaleY(-1) scaleX(-1)") {
+          pieceToRotate.style.transform = "scaleY(-1)";
+          console.log(pieceToRotate.style.transform);
+        } else if (orientation == "scaleY(-1)")
+          pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
+        else pieceToRotate.style.transform = "scaleX(-1)";
+
+        this.removeHighlights(board);
+        rotateBtn.style.visibility = "hidden";
+      } else {
+        pieceToRotate.classList.remove("right");
+        pieceToRotate.classList.add("left");
+
+        if (orientation == "scaleY(-1) scaleX(-1)") {
+          pieceToRotate.style.transform = "scaleY(-1)";
+          console.log(pieceToRotate.style.transform);
+        } else if (orientation == "scaleY(-1)")
+          pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
+        else pieceToRotate.style.transform = "scaleX(-1)";
+
+        this.removeHighlights(board);
+        rotateBtn.style.visibility = "hidden";
+      }
+    }
+    //searching for all the cannons to shoot after move has been made
+    this.pieces.forEach((piece) => {
+      if (piece.id.slice(-2) == this.PlayerToMove) {
+        if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+          piece.shootCannon();
+        }
+      }
+    });
+    //setting the playerToMove property for the next move
+    if (selectedPiece.slice(-2) == "P1") {
+      this.PlayerToMove = "P2";
+    } else {
+      this.PlayerToMove = "P1";
+    }
+  }
 }

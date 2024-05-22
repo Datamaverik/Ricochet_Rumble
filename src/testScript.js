@@ -1,12 +1,14 @@
 // script.js
 import Game from "./game.mjs";
-import { changeTheme } from "./utility-function.mjs";
+import { changeTheme, addClasses } from "./utility-function.mjs";
 
 let selectedPiece = "",
   tileId,
-  piceToMove;
+  piceToMove,
+  pieceToRotate;
 
 const playerToMove = document.getElementById("player-to-move");
+const rotateBtn = document.getElementById("rotateBtn");
 
 // Get the game board element
 const gameBoard = document.querySelector(".game-board");
@@ -17,23 +19,26 @@ const game = new Game(gameBoard);
 game.createGameBoard();
 
 //Adding pieces for player 1
-game.addPiece("titan-P1", "#730101", 6);
-game.addPiece("tank-P1", "#b61515", 13);
-game.addPiece("ricochet-P1", "#ff3e3e", 4);
-game.addPiece("semiRicochet-P1", "#a35353", 11);
+game.addPiece("titan-P1", "brown", 6);
+game.addPiece("tank-P1", "brown", 13);
+game.addPiece("ricochet-P1", "brown", 4);
+const piece = document.getElementById("ricochet-P1");
+piece.style.transform = "scaleY(-1) scaleX(-1)";
+game.addPiece("semiRicochet-P1", "brown", 11);
 game.addPiece("cannon-P1", "brown", 2);
 
 //Adding pieces for player 2
-game.addPiece("titan-P2", "#003b88", 59);
+game.addPiece("titan-P2", "#005ed8", 59);
 game.addPiece("tank-P2", "#005ed8", 52);
-game.addPiece("ricochet-P2", "#4394ff", 61);
-game.addPiece("semiRicochet-P2", "#2d578e", 54);
-game.addPiece("cannon-P2", "darkBlue", 63);
+game.addPiece("ricochet-P2", "#005ed8", 61);
+game.addPiece("semiRicochet-P2", "#005ed8", 54);
+game.addPiece("cannon-P2", "#005ed8", 63);
+
+addClasses();
 
 gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
   const newSelectedPiece = e.target.id;
-  // console.log(e.target.parentNode);
 
   //checking if a valid piece is selected
   if (isNaN(parseInt(newSelectedPiece))) {
@@ -52,7 +57,21 @@ gameBoard.addEventListener("click", (e) => {
       game.removeHighlights(gameBoard.querySelectorAll(".square"));
     }
   } else game.removeHighlights(gameBoard.querySelectorAll(".square"));
+
+  if (
+    newSelectedPiece.slice(0, -3) == "ricochet" ||
+    newSelectedPiece.slice(0, -3) == "semiRicochet"
+  ) {
+    rotateBtn.style.visibility = "visible";
+  } else {
+    rotateBtn.style.visibility = "hidden";
+  }
+
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
+});
+
+rotateBtn.addEventListener("click", () => {
+  game.rotatePiece(selectedPiece, gameBoard.querySelectorAll(".square"));
 });
 
 playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
