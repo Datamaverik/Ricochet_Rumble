@@ -1,4 +1,5 @@
 import { Icons } from "./utility-function.mjs";
+import { game } from "./testScript.js";
 
 export default class Piece {
   constructor(id, color) {
@@ -85,6 +86,13 @@ export default class Piece {
       const firstChild = targetTile.firstChild;
       //checking if the first child is a piece or not
       if (firstChild.classList.contains("pieces")) {
+        if (firstChild.id.slice(0, -3) == "titan") {
+          
+          let playerWon;
+          if (firstChild.id.slice(-2) == "P1") playerWon = "P2";
+          else playerWon = "P1";
+          game.endGame(playerWon, "Titan is hit the game is Over!");
+        }
         //updating the selected piece
         selectedPiece = firstChild.id.slice(-2);
         //checking if its not cannon, semiRicochet or ricochet
@@ -132,21 +140,15 @@ export default class Piece {
           else if (this.cannonDirection == "right")
             this.cannonDirection = "down";
           else return true;
-        } 
-        
-        else if (deflectedTo == "right" && selectedPiece == "P1") {
+        } else if (deflectedTo == "right" && selectedPiece == "P1") {
           if (this.cannonDirection == "left") this.cannonDirection = "down";
           else if (this.cannonDirection == "up") this.cannonDirection = "right";
           else return true;
-        } 
-        
-        else if (deflectedTo == "left" && selectedPiece == "P2") {
+        } else if (deflectedTo == "left" && selectedPiece == "P2") {
           if (this.cannonDirection == "down") this.cannonDirection = "left";
           else if (this.cannonDirection == "right") this.cannonDirection = "up";
           else return true;
-        } 
-        
-        else if (deflectedTo == "right" && selectedPiece == "P2") {
+        } else if (deflectedTo == "right" && selectedPiece == "P2") {
           if (this.cannonDirection == "down") this.cannonDirection = "right";
           else if (this.cannonDirection == "left") this.cannonDirection = "up";
           else return true;

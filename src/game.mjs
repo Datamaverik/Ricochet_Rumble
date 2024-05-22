@@ -71,7 +71,7 @@ export default class Game {
   }
 
   endGame(winner, msg) {
-    alert(msg + ` ${winner} wins!!`);
+    alert(msg + `, ${winner} wins!!`);
     this.stopTimer("P1");
     this.stopTimer("P2");
     // Additional logic to freeze the game

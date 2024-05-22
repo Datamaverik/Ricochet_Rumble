@@ -20,7 +20,7 @@ const rotateBtn = document.getElementById("rotateBtn");
 const gameBoard = document.querySelector(".game-board");
 
 // Create a new instance of the Game class
-const game = new Game(gameBoard);
+export const game = new Game(gameBoard);
 
 game.createGameBoard();
 
