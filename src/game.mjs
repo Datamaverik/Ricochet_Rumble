@@ -5,7 +5,76 @@ export default class Game {
     this.gameBoard = boardSelector;
     this.selectedPiece = null;
     this.pieces = [];
+    this.timerP1 = 300;
+    this.timerP2 = 300;
     this.PlayerToMove = "P1";
+  }
+
+  initTimers() {
+    // Display the initial timers
+    document.getElementById("timerP1").textContent = this.formatTime(
+      this.timerP1
+    );
+    document.getElementById("timerP2").textContent = this.formatTime(
+      this.timerP2
+    );
+  }
+
+  formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  }
+
+  startTimer(player) {
+    if (player === "P1") {
+      this.intervalP1 = setInterval(() => {
+        if (this.timerP1 > 0) {
+          this.timerP1--;
+          document.getElementById("timerP1").textContent = this.formatTime(
+            this.timerP1
+          );
+        } else {
+          this.endGame("P1", "Time's up!!!");
+        }
+      }, 1000);
+    } else {
+      this.intervalP2 = setInterval(() => {
+        if (this.timerP2 > 0) {
+          this.timerP2--;
+          document.getElementById("timerP2").textContent = this.formatTime(
+            this.timerP2
+          );
+        } else {
+          this.endGame("P2", "Time's up!!!");
+        }
+      }, 1000);
+    }
+  }
+
+  stopTimer(player) {
+    if (player === "P1") {
+      clearInterval(this.intervalP1);
+    } else {
+      clearInterval(this.intervalP2);
+    }
+  }
+
+  switchTimer() {
+    if (this.PlayerToMove === "P1") {
+      this.stopTimer("P2");
+      this.startTimer("P1");
+    } else {
+      this.stopTimer("P1");
+      this.startTimer("P2");
+    }
+  }
+
+  endGame(winner, msg) {
+    alert(msg + ` ${winner} wins!!`);
+    this.stopTimer("P1");
+    this.stopTimer("P2");
+    // Additional logic to freeze the game
   }
 
   createGameBoard() {
@@ -44,6 +113,7 @@ export default class Game {
           }
         }
       });
+      this.switchTimer();
     }
     //setting the playerToMove property for the next move
     if (selectedPieceId.slice(-2) == "P1") {
@@ -195,6 +265,7 @@ export default class Game {
         }
       }
     });
+    this.switchTimer();
     //setting the playerToMove property for the next move
     if (selectedPiece.slice(-2) == "P1") {
       this.PlayerToMove = "P2";

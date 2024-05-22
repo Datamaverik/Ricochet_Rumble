@@ -1,11 +1,17 @@
 // script.js
 import Game from "./game.mjs";
-import { changeTheme, addClasses } from "./utility-function.mjs";
+import { changeTheme, addClasses} from "./utility-function.mjs";
 
 let selectedPiece = "",
   tileId,
-  piceToMove,
-  pieceToRotate;
+  piceToMove;
+
+const container = document.querySelector(".container");
+const timerContainer = document.createElement("div");
+timerContainer.classList.add("timer-container");
+const player2Timer = document.getElementById("player2-timer-container");
+const player1Timer = document.getElementById("player1-timer-container");
+const buttonContainer = document.getElementById("btn-container");
 
 const playerToMove = document.getElementById("player-to-move");
 const rotateBtn = document.getElementById("rotateBtn");
@@ -35,6 +41,8 @@ game.addPiece("semiRicochet-P2", "#005ed8", 54);
 game.addPiece("cannon-P2", "#005ed8", 63);
 
 addClasses();
+game.initTimers();
+// game.startTimer("P1")
 
 gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
@@ -81,3 +89,36 @@ document.documentElement.className = "dark";
 
 //handling theme change
 document.getElementById("theme-button").addEventListener("click", changeTheme);
+
+//handling media queries
+document.addEventListener("DOMContentLoaded", () => {
+  adjust();
+});
+
+//Initial layout adjustment
+adjust();
+
+//Adjusting layout on windows resize
+window.addEventListener("resize", adjust);
+
+function adjust() {
+  if (window.innerWidth < 600) {
+    timerContainer.appendChild(player1Timer);
+    timerContainer.appendChild(buttonContainer);
+    timerContainer.appendChild(player2Timer);
+    container.insertBefore(timerContainer, gameBoard);
+  } else {
+    if (container.contains(document.querySelector(".timer-container"))) {
+      Array.from(document.querySelectorAll(".timer-containier")).forEach(
+        (cont) => {
+          container.removeChild(cont);
+        }
+      );
+    }
+    document.body.insertBefore(buttonContainer,container);
+    container.appendChild(player1Timer);
+    container.appendChild(player2Timer);
+    container.insertBefore(player1Timer, gameBoard);
+    container.insertBefore(gameBoard, player2Timer);
+  }
+}
