@@ -8,6 +8,7 @@ export default class Game {
     this.timerP1 = 300;
     this.timerP2 = 300;
     this.PlayerToMove = "P1";
+    this.isPaused = false;
   }
 
   initTimers() {
@@ -57,6 +58,17 @@ export default class Game {
       clearInterval(this.intervalP1);
     } else {
       clearInterval(this.intervalP2);
+    }
+  }
+
+  toggleTimer() {
+    if (this.isPaused) {
+      this.PlayerToMove == "P1" ? this.startTimer("P2") : this.startTimer("P1");
+      this.isPaused = false;
+    } else {
+      this.stopTimer("P1");
+      this.stopTimer("P2");
+      this.isPaused = true;
     }
   }
 

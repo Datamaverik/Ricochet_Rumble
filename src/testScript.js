@@ -1,6 +1,6 @@
 // script.js
 import Game from "./game.mjs";
-import { changeTheme, addClasses} from "./utility-function.mjs";
+import { changeTheme, addClasses } from "./utility-function.mjs";
 
 let selectedPiece = "",
   tileId,
@@ -15,6 +15,11 @@ const buttonContainer = document.getElementById("btn-container");
 
 const playerToMove = document.getElementById("player-to-move");
 const rotateBtn = document.getElementById("rotateBtn");
+
+const pauseBtn = document.getElementById("pauseBtn");
+const resumeBtn = document.getElementById("resume");
+const restartBtn = document.getElementById("restart");
+const favDialog = document.getElementById("pauseScreen");
 
 // Get the game board element
 const gameBoard = document.querySelector(".game-board");
@@ -95,11 +100,32 @@ document.addEventListener("DOMContentLoaded", () => {
   adjust();
 });
 
+//starting the timer for P1 as game starts
+window.onload=()=>{
+  game.startTimer("P2");
+}
+
 //Initial layout adjustment
 adjust();
 
 //Adjusting layout on windows resize
 window.addEventListener("resize", adjust);
+
+//Pause screen dialog box
+pauseBtn.addEventListener("click", () => {
+  favDialog.showModal();
+  game.toggleTimer();
+});
+
+//Restarts the game
+restartBtn.addEventListener("click", () => {
+  window.location.reload();
+});
+//resumes the game
+resumeBtn.addEventListener("click", () => {
+  favDialog.close();
+  game.toggleTimer();
+});
 
 function adjust() {
   if (window.innerWidth < 600) {
@@ -115,7 +141,7 @@ function adjust() {
         }
       );
     }
-    document.body.insertBefore(buttonContainer,container);
+    document.body.insertBefore(buttonContainer, container);
     container.appendChild(player1Timer);
     container.appendChild(player2Timer);
     container.insertBefore(player1Timer, gameBoard);
