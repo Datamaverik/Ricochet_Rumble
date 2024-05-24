@@ -9,6 +9,23 @@ export default class Game {
     this.timerP2 = 300;
     this.PlayerToMove = "P1";
     this.isPaused = false;
+    this.historyP1 = [];
+    this.historyP2 = [];
+    this.from = "";
+    this.to = "";
+  }
+
+  recordMove(pieceMoved, from, to) {
+    const move = {
+      piece: pieceMoved,
+      from: from,
+      to: to,
+    };
+    if (this.PlayerToMove === "P1") {
+      this.historyP1.push(move);
+    } else {
+      this.historyP2.push(move);
+    }
   }
 
   initTimers() {
@@ -116,6 +133,8 @@ export default class Game {
   movePiece(selectedPieceId, targetTileId) {
     const piece = this.pieces.find((piece) => piece.id === selectedPieceId);
     if (piece && this.PlayerToMove == selectedPieceId.slice(-2)) {
+      this.to = targetTileId;
+      this.recordMove(selectedPieceId, this.from, this.to);
       piece.movePiece(targetTileId);
       //searching for all the cannons to shoot after move has been made
       this.pieces.forEach((piece) => {
@@ -126,6 +145,8 @@ export default class Game {
         }
       });
       this.switchTimer();
+      console.log(this.historyP1);
+      console.log(this.historyP2);
     }
     //setting the playerToMove property for the next move
     if (selectedPieceId.slice(-2) == "P1") {
@@ -146,6 +167,7 @@ export default class Game {
   highlightValidMoves(board, targetTile, selectedPiece) {
     //checking if the correct turn is being moved or not
     if (selectedPiece.slice(-2) == this.PlayerToMove) {
+      this.from = targetTile;
       // Remove any existing highlights
       Array.from(board).forEach((square) => {
         if (square.classList.contains("highlighted")) {
@@ -243,7 +265,9 @@ export default class Game {
 
       if (pieceToRotate.classList.contains("left")) {
         pieceToRotate.classList.remove("left");
+        this.from="left";
         pieceToRotate.classList.add("right");
+        this.to = "right";
 
         if (orientation == "scaleY(-1) scaleX(-1)") {
           pieceToRotate.style.transform = "scaleY(-1)";
@@ -256,7 +280,9 @@ export default class Game {
         rotateBtn.style.visibility = "hidden";
       } else {
         pieceToRotate.classList.remove("right");
+        this.from="right";
         pieceToRotate.classList.add("left");
+        this.to = "left";
 
         if (orientation == "scaleY(-1) scaleX(-1)") {
           pieceToRotate.style.transform = "scaleY(-1)";
@@ -265,6 +291,7 @@ export default class Game {
           pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
         else pieceToRotate.style.transform = "scaleX(-1)";
 
+        this.recordMove(selectedPiece, this.from, this.to);
         this.removeHighlights(board);
         rotateBtn.style.visibility = "hidden";
       }
@@ -284,5 +311,7 @@ export default class Game {
     } else {
       this.PlayerToMove = "P1";
     }
+    console.log(this.historyP1);
+    console.log(this.historyP2);
   }
 }

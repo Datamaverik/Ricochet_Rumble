@@ -129,13 +129,17 @@ body {
   justify-content: center;
   margin: 0px;
 }
-.overallCont{
+.overallCont {
   display: flex;
-  gap: min(25px,2vw);
+  gap: min(25px, 2vw);
+  justify-content: center;
 }
-.historyPage{
-  padding: 10px;
-  border-radius: 5pxfcc;
+.historyPage {
+  text-align: center;
+  width: 400px;
+  margin-right: 10px;
+  padding: 20px;
+  border-radius: 10px;
   backdrop-filter: blur(3px);
   background-color: rgba(35, 35, 35, 0.497);
 }
@@ -324,6 +328,7 @@ body {
     z-index: 1000;
   }
   .navbar {
+    width: 100%;
     position: sticky;
     top: 0px;
     justify-content: space-between;
@@ -374,6 +379,10 @@ body {
   #P2timer {
     color: rgb(47, 172, 255);
   }
+  .overallCont {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 350px) {
@@ -381,5 +390,15 @@ body {
     margin: 0px;
     grid-template-columns: repeat(8, 35px);
     grid-template-rows: repeat(8, 35px);
+  }
+  .navbar {
+    width: 100%;
+  }
+}
+
+@media (min-width: 900px) {
+  .game-board {
+    grid-template-columns: repeat(8, 55px);
+    grid-template-rows: repeat(8, 55px);
   }
 }
