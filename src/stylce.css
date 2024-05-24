@@ -55,13 +55,23 @@
   --timer-text-shadow: 0px 0px 4px rgba(39, 26, 26, 0.503);
 
   --filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.634));
+
+  /* --pause-scr-hover-filter:drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.856));
+  --pause-scr-color:rgba(255, 255, 255, 0.815);
+  --pause-scr-textShadow:0px 0px 3px rgba(255, 255, 255, 0.856);
+  --pause-scr-filter:drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.856));
+  --pause-scr-fill:rgba(255, 255, 255, 0.791); */
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   margin: 0px;
   color: var(--base-color);
   background-color: var(--base-bg);
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-image: url(/src/assets/dark_cracked_grunge_background_texture_3009.jpg);
+  background-size: contain;
 }
 
 .navbar,
@@ -81,6 +91,7 @@ body {
 }
 .navbar h1 {
   margin: 0px;
+  margin-right: 20px;
 }
 .navbar button,
 #rotateBtn {
@@ -113,10 +124,20 @@ body {
 
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: 0px;
+}
+.overallCont{
+  display: flex;
+  gap: min(25px,2vw);
+}
+.historyPage{
+  padding: 10px;
+  border-radius: 5pxfcc;
+  backdrop-filter: blur(3px);
+  background-color: rgba(35, 35, 35, 0.497);
 }
 #btn-container {
   display: flex;
@@ -127,8 +148,10 @@ body {
   border: 10px solid rgb(85, 85, 85);
   margin: 10px;
   display: grid;
-  grid-template-columns: repeat(8, 60px);
-  grid-template-rows: repeat(8, 60px);
+  grid-template-columns: repeat(8, 50px);
+  grid-template-rows: repeat(8, 50px);
+  backdrop-filter: blur(5px);
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.524);
 }
 .square {
   padding: 3px;
@@ -168,7 +191,15 @@ body {
   font-size: 40px;
   font-family: TickingTimer;
 }
-#P1timer {
+.timer-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#P1timer,
+#P2timer {
   color: rgb(220, 45, 45);
   border-radius: 5px;
   padding: 3px;
@@ -179,12 +210,11 @@ body {
 }
 #P2timer {
   color: rgb(47, 172, 255);
-  border-radius: 5px;
-  padding: 3px;
-  font-size: large;
-  font-weight: bold;
-  text-shadow: var(--timer-text-shadow);
-  background-color: var(--timer-bgc);
+}
+#player1-timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 #pauseBtn {
   display: flex;
@@ -201,24 +231,66 @@ body {
   padding: 0px;
 }
 
+#dialog-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 45vh;
+  width: 45vw;
+}
+#dialog-container button:hover {
+  cursor: pointer;
+  transform: scale(1.15);
+  filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.856));
+}
 #pauseScreen {
-  backdrop-filter: blur(10px);
+  position: relative;
+  border-radius: 20px;
+  border: 5px solid rgba(71, 71, 71, 0.438);
+  background-color: rgba(0, 0, 0, 0.719);
+  overflow: hidden;
+}
+#pauseScreen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(/src/assets/war-zone.jpg);
+  background-position: center;
+  background-size: cover;
+  filter: blur(2px); /* Adjust the blur level as needed */
+  z-index: -1; /* Ensure the blurred image stays behind the content */
 }
 #pauseScreen::backdrop {
   background-color: #0000009d;
   backdrop-filter: blur(3px);
 }
-#resume{
+#resume,
+#restart {
+  transition: 0.2s ease-in-out;
+  border: none;
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  font-weight: bolder;
+  color: rgba(255, 255, 255, 0.815);
+  font-size: 1.05em;
+  text-shadow: 0px 0px 3px rgba(255, 255, 255, 0.856);
+  background-color: transparent;
 }
-#resume > svg{
+#resume > svg,
+#restart > svg {
+  filter: drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.856));
+  fill: rgba(255, 255, 255, 0.791);
+  pointer-events: none;
   margin: 0px;
   padding: 0px;
-  width: 60px;
+  width: min(8vw, 60px);
 }
 
 .footer {
@@ -244,8 +316,27 @@ body {
     display: flex;
     flex-direction: column;
   }
+  .navbar,
+  .footer {
+    align-items: center;
+    padding: 5px;
+    margin-bottom: 0px;
+    z-index: 1000;
+  }
+  .navbar {
+    position: sticky;
+    top: 0px;
+    justify-content: space-between;
+  }
+  .navbar h1 {
+    font-size: 1.5em;
+    margin: 0px;
+    margin-right: 20px;
+  }
   .container {
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
   }
   .timer-container {
@@ -256,5 +347,39 @@ body {
   }
   .game-board {
     margin: 0px;
+    grid-template-columns: repeat(8, 40px);
+    grid-template-rows: repeat(8, 40px);
+  }
+  .cannonball {
+    border-radius: 15px;
+    height: 15px;
+    width: 15px;
+  }
+  .timer {
+    width: 40px;
+    text-align: center;
+    font-size: 35px;
+    font-family: TickingTimer;
+  }
+  #P1timer,
+  #P2timer {
+    color: rgb(220, 45, 45);
+    border-radius: 5px;
+    padding: 3px;
+    font-size: medium;
+    font-weight: bold;
+    text-shadow: var(--timer-text-shadow);
+    background-color: var(--timer-bgc);
+  }
+  #P2timer {
+    color: rgb(47, 172, 255);
+  }
+}
+
+@media (max-width: 350px) {
+  .game-board {
+    margin: 0px;
+    grid-template-columns: repeat(8, 35px);
+    grid-template-rows: repeat(8, 35px);
   }
 }

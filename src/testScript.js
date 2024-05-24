@@ -7,11 +7,13 @@ let selectedPiece = "",
   piceToMove;
 
 const container = document.querySelector(".container");
-const timerContainer = document.createElement("div");
-timerContainer.classList.add("timer-container");
+const history = document.createElement("div");
+history.classList.add("historyPage");
+history.textContent="History hai bhai history!"
 const player2Timer = document.getElementById("player2-timer-container");
 const player1Timer = document.getElementById("player1-timer-container");
 const buttonContainer = document.getElementById("btn-container");
+const overallContainer = document.querySelector(".overallCont");
 
 const playerToMove = document.getElementById("player-to-move");
 const rotateBtn = document.getElementById("rotateBtn");
@@ -93,7 +95,7 @@ playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 document.documentElement.className = "dark";
 
 //handling theme change
-document.getElementById("theme-button").addEventListener("click", changeTheme);
+// document.getElementById("theme-button").addEventListener("click", changeTheme);
 
 //handling media queries
 document.addEventListener("DOMContentLoaded", () => {
@@ -101,14 +103,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 //starting the timer for P1 as game starts
-window.onload=()=>{
+window.onload = () => {
   game.startTimer("P2");
-}
+};
 
-//Initial layout adjustment
+// //Initial layout adjustment
 adjust();
 
-//Adjusting layout on windows resize
+// //Adjusting layout on windows resize
 window.addEventListener("resize", adjust);
 
 //Pause screen dialog box
@@ -128,23 +130,10 @@ resumeBtn.addEventListener("click", () => {
 });
 
 function adjust() {
-  if (window.innerWidth < 600) {
-    timerContainer.appendChild(player1Timer);
-    timerContainer.appendChild(buttonContainer);
-    timerContainer.appendChild(player2Timer);
-    container.insertBefore(timerContainer, gameBoard);
+  if (window.innerWidth > 600) {
+    overallContainer.appendChild(history);
   } else {
-    if (container.contains(document.querySelector(".timer-container"))) {
-      Array.from(document.querySelectorAll(".timer-containier")).forEach(
-        (cont) => {
-          container.removeChild(cont);
-        }
-      );
-    }
-    document.body.insertBefore(buttonContainer, container);
-    container.appendChild(player1Timer);
-    container.appendChild(player2Timer);
-    container.insertBefore(player1Timer, gameBoard);
-    container.insertBefore(gameBoard, player2Timer);
+    if (overallContainer.contains(history))
+      overallContainer.removeChild(history);
   }
 }
