@@ -28,6 +28,28 @@ export default class Game {
     }
   }
 
+  printMoveHist(pieceMoved, from, to) {
+    const history = document.querySelector(".historyPage");
+    const move = document.createElement("p");
+    if (from == "left" || from == "right")
+      move.textContent = `${pieceMoved.slice(0, -3)} was rotated`;
+    else
+      move.textContent = `${pieceMoved.slice(
+        0,
+        -3
+      )} was moved from ${from} to ${to}`;
+    if (pieceMoved.slice(-2) == "P1") {
+      move.style.color = "brown";
+    } else {
+      move.style.color = "#005ed8";
+    }
+    if (history.firstChild) {
+      history.insertBefore(move, history.firstChild);
+    } else {
+      history.appendChild(move);
+    }
+  }
+
   initTimers() {
     // Display the initial timers
     document.getElementById("timerP1").textContent = this.formatTime(
@@ -100,9 +122,13 @@ export default class Game {
   }
 
   endGame(winner, msg) {
+    document.getElementById("pauseScreen").showModal();
     alert(msg + `, ${winner} wins!!`);
     this.stopTimer("P1");
     this.stopTimer("P2");
+    setTimeout(()=>{
+      window.location.reload();
+    },3000);
     // Additional logic to freeze the game
   }
 
@@ -135,6 +161,7 @@ export default class Game {
     if (piece && this.PlayerToMove == selectedPieceId.slice(-2)) {
       this.to = targetTileId;
       this.recordMove(selectedPieceId, this.from, this.to);
+      this.printMoveHist(selectedPieceId, this.from, this.to);
       piece.movePiece(targetTileId);
       //searching for all the cannons to shoot after move has been made
       this.pieces.forEach((piece) => {
@@ -265,7 +292,7 @@ export default class Game {
 
       if (pieceToRotate.classList.contains("left")) {
         pieceToRotate.classList.remove("left");
-        this.from="left";
+        this.from = "left";
         pieceToRotate.classList.add("right");
         this.to = "right";
 
@@ -276,11 +303,13 @@ export default class Game {
           pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
         else pieceToRotate.style.transform = "scaleX(-1)";
 
+        this.recordMove(selectedPiece, this.from, this.to);
+        this.printMoveHist(selectedPiece, this.from, this.to);
         this.removeHighlights(board);
         rotateBtn.style.visibility = "hidden";
       } else {
         pieceToRotate.classList.remove("right");
-        this.from="right";
+        this.from = "right";
         pieceToRotate.classList.add("left");
         this.to = "left";
 
@@ -292,6 +321,7 @@ export default class Game {
         else pieceToRotate.style.transform = "scaleX(-1)";
 
         this.recordMove(selectedPiece, this.from, this.to);
+        this.printMoveHist(selectedPiece, this.from, this.to);
         this.removeHighlights(board);
         rotateBtn.style.visibility = "hidden";
       }

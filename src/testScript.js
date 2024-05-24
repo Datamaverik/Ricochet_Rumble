@@ -9,10 +9,6 @@ let selectedPiece = "",
 const container = document.querySelector(".container");
 const history = document.createElement("div");
 history.classList.add("historyPage");
-history.textContent="History hai bhai history!"
-const player2Timer = document.getElementById("player2-timer-container");
-const player1Timer = document.getElementById("player1-timer-container");
-const buttonContainer = document.getElementById("btn-container");
 const overallContainer = document.querySelector(".overallCont");
 
 const playerToMove = document.getElementById("player-to-move");
