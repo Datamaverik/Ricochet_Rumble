@@ -50,6 +50,18 @@ export default class Piece {
     T.appendChild(this.element);
   }
 
+  rotate(){
+    let pieceToRotate = document.getElementById(this.id);
+    let orientation = pieceToRotate.style.transform;
+    if (orientation == "scaleY(-1) scaleX(-1)") {
+      pieceToRotate.style.transform = "scaleY(-1)";
+    } else if (orientation == "scaleY(-1)")
+      pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
+    else if (orientation == "scaleX(-1)")
+      pieceToRotate.style.transform = "scaleX(1)";
+    else pieceToRotate.style.transform = "scaleX(-1)";
+  }
+
   shootCannon() {
     let cannonTile = parseInt(this.element.parentNode.id);
     if (cannonTile < 9) this.cannonDirection = "down";

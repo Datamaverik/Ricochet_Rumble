@@ -19,6 +19,9 @@ const resumeBtn = document.getElementById("resume");
 const restartBtn = document.getElementById("restart");
 const favDialog = document.getElementById("pauseScreen");
 
+const undo = document.getElementById("undo");
+const redo = document.getElementById("redo");
+
 // Get the game board element
 const gameBoard = document.querySelector(".game-board");
 
@@ -104,6 +107,7 @@ gameBoard.addEventListener("click", (e) => {
 rotateBtn.addEventListener("click", () => {
   game.rotatePiece(selectedPiece, gameBoard);
   swapBtn.style.visibility = "hidden";
+   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 });
 
 swapBtn.addEventListener("click", () => {
@@ -111,6 +115,14 @@ swapBtn.addEventListener("click", () => {
   rotateBtn.style.visibility = "hidden";
   game.highlightSwapables(gameBoard, selectedPiece);
 });
+
+undo.addEventListener("click",()=>{
+  game.undoMove();
+})
+
+redo.addEventListener("click",()=>{
+  game.redoMove();
+})
 
 playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 
@@ -167,10 +179,10 @@ document.getElementById("reset").addEventListener("click", () => {
 });
 
 function adjust() {
+  overallContainer.appendChild(history);
   if (window.innerWidth > 600) {
-    overallContainer.appendChild(history);
+    history.style.display="flex";
   } else {
-    if (overallContainer.contains(history))
-      overallContainer.removeChild(history);
+    history.style.display="none";
   }
 }

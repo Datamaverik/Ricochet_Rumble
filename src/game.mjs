@@ -9,24 +9,60 @@ export default class Game {
     this.timerP2 = 300;
     this.PlayerToMove = "P1";
     this.isPaused = false;
-    this.historyP1 = [];
-    this.historyP2 = [];
+    this.moveHist = [];
     this.from = "";
     this.to = "";
     this.fromSwap = "";
+    this.ptr = 0;
   }
 
-  recordMove(pieceMoved, from, to) {
+  recordMove(pieceMoved, from, to, spec) {
     const move = {
       piece: pieceMoved,
       from: from,
       to: to,
+      spec: spec,
     };
-    if (this.PlayerToMove === "P1") {
-      this.historyP1.push(move);
-    } else {
-      this.historyP2.push(move);
+    this.moveHist.push(move);
+    this.ptr = this.moveHist.length;
+  }
+
+  undoMove() {
+    if (this.ptr > 0) {
+      this.disableBoard();
+      this.ptr--;
+      const move = this.moveHist[this.ptr];
+      const peice = this.pieces.find((p) => p.id == move.piece);
+      if (move.spec == null) peice.swap(move.from);
+      else if (move.spec == "rotate") {
+        peice.rotate();
+      }
     }
+  }
+
+  redoMove() {
+    if (this.ptr < this.moveHist.length) {
+      const move = this.moveHist[this.ptr];
+      this.ptr++;
+      const peice = this.pieces.find((p) => p.id == move.piece);
+      if (move.spec == null) peice.swap(move.to);
+      else if (move.spec == "rotate") {
+        peice.rotate();
+      }
+    }
+    if (this.ptr >= this.moveHist.length) {
+      this.enableBoard();
+    }
+  }
+
+  disableBoard() {
+    this.gameBoard.classList.add("disabled");
+    this.isPaused = true;
+  }
+
+  enableBoard() {
+    this.gameBoard.classList.remove("disabled");
+    this.isPaused = false;
   }
 
   printMoveHist(pieceMoved, from, to) {
@@ -176,7 +212,7 @@ export default class Game {
     const piece = this.pieces.find((piece) => piece.id === selectedPieceId);
     if (piece && this.PlayerToMove == selectedPieceId.slice(-2)) {
       this.to = targetTileId;
-      this.recordMove(selectedPieceId, this.from, this.to);
+      this.recordMove(selectedPieceId, this.from, this.to, null);
       this.printMoveHist(selectedPieceId, this.from, this.to);
       piece.movePiece(targetTileId);
       //searching for all the cannons to shoot after move has been made
@@ -317,13 +353,13 @@ export default class Game {
 
         if (orientation == "scaleY(-1) scaleX(-1)") {
           pieceToRotate.style.transform = "scaleY(-1)";
-          console.log(pieceToRotate.style.transform);
         } else if (orientation == "scaleY(-1)")
           pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
-          else if(orientation=="scaleX(-1)")pieceToRotate.style.transform="scaleX(1)";
+        else if (orientation == "scaleX(-1)")
+          pieceToRotate.style.transform = "scaleX(1)";
         else pieceToRotate.style.transform = "scaleX(-1)";
 
-        this.recordMove(selectedPiece, this.from, this.to);
+        this.recordMove(selectedPiece, this.from, this.to, "rotate");
         this.printMoveHist(selectedPiece, this.from, this.to);
         this.removeHighlights(board);
         rotateBtn.style.visibility = "hidden";
@@ -341,7 +377,7 @@ export default class Game {
           pieceToRotate.style.transform = "scaleX(1)";
         else pieceToRotate.style.transform = "scaleX(-1)";
 
-        this.recordMove(selectedPiece, this.from, this.to);
+        this.recordMove(selectedPiece, this.from, this.to, "rotate");
         this.printMoveHist(selectedPiece, this.from, this.to);
         this.removeHighlights(board);
         rotateBtn.style.visibility = "hidden";
@@ -370,7 +406,7 @@ export default class Game {
     const tile2 = toSwap.element.parentNode.id;
     this.fromSwap.swap(tile2);
     toSwap.swap(tile1);
-    this.recordMove(piece, tile1, tile2);
+    this.recordMove(piece, tile1, tile2, "swap");
 
     //printing the move
     const history = document.querySelector(".historyPage");
