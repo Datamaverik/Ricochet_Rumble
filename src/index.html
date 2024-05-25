@@ -34,7 +34,7 @@
     <div class="overallCont">
       <div class="container">
         <dialog id="pauseScreen">
-          <div id="game-msg">Titan is hit! Yesss P1 won!!</div>
+          <div id="game-msg"></div>
           <div id="dialog-container">
             <button id="resume">
               <svg
@@ -111,13 +111,17 @@
               Restart
             </button>
           </div>
+          <button id="reset">reset memeory</button>
         </dialog>
         <div class="timer-container">
           <div id="player1-timer-container">
             <div id="P1timer">Player 1</div>
             <div class="timer" id="timerP2">0:00</div>
           </div>
-          <div id="btn-container"><button id="rotateBtn">Rotate</button></div>
+          <div id="btn-container">
+            <button id="rotateBtn">Rotate</button>
+            <button id="swapBtn">Swap</button>
+          </div>
           <div id="player2-timer-container">
             <div id="P2timer">Player 2</div>
             <div class="timer" id="timerP1">0:00</div>

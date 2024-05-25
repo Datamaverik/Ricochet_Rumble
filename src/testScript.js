@@ -6,13 +6,13 @@ let selectedPiece = "",
   tileId,
   piceToMove;
 
-const container = document.querySelector(".container");
 const history = document.createElement("div");
 history.classList.add("historyPage");
 const overallContainer = document.querySelector(".overallCont");
 
 const playerToMove = document.getElementById("player-to-move");
 const rotateBtn = document.getElementById("rotateBtn");
+const swapBtn = document.getElementById("swapBtn");
 
 const pauseBtn = document.getElementById("pauseBtn");
 const resumeBtn = document.getElementById("resume");
@@ -51,9 +51,15 @@ gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
   const newSelectedPiece = e.target.id;
 
+  if (e.target.classList.contains("swapable")) {
+    game.swapPiece(newSelectedPiece);
+    game.removeHighlights(gameBoard);
+  }
+
   //checking if a valid piece is selected
   if (isNaN(parseInt(newSelectedPiece))) {
     selectedPiece = newSelectedPiece;
+    //highlighting the movable tiles
     game.highlightValidMoves(
       gameBoard.querySelectorAll(".square"),
       e.target.parentNode.id,
@@ -65,24 +71,40 @@ gameBoard.addEventListener("click", (e) => {
     if (selectedPiece !== "") {
       piceToMove = document.getElementById(selectedPiece);
       game.movePiece(selectedPiece, tileId);
-      game.removeHighlights(gameBoard.querySelectorAll(".square"));
+      game.removeHighlights(gameBoard);
     }
-  } else game.removeHighlights(gameBoard.querySelectorAll(".square"));
+  } else game.removeHighlights(gameBoard);
 
+  //making the rotate button visible
   if (
-    newSelectedPiece.slice(0, -3) == "ricochet" ||
-    newSelectedPiece.slice(0, -3) == "semiRicochet"
+    (newSelectedPiece.slice(0, -3) == "ricochet" ||
+      newSelectedPiece.slice(0, -3) == "semiRicochet") &&
+    newSelectedPiece.slice(-2) == game.PlayerToMove
   ) {
     rotateBtn.style.visibility = "visible";
   } else {
     rotateBtn.style.visibility = "hidden";
   }
 
+  //making the swap button visible
+  if (
+    newSelectedPiece.slice(0, -3) == "semiRicochet" &&
+    newSelectedPiece.slice(-2) == game.PlayerToMove
+  ) {
+    swapBtn.style.visibility = "visible";
+  } else {
+    swapBtn.style.visibility = "hidden";
+  }
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 });
 
 rotateBtn.addEventListener("click", () => {
   game.rotatePiece(selectedPiece, gameBoard.querySelectorAll(".square"));
+});
+
+swapBtn.addEventListener("click", () => {
+  rotateBtn.style.visibility = "hidden";
+  game.highlightSwapables(gameBoard, selectedPiece);
 });
 
 playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
@@ -100,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //starting the timer for P1 as game starts
 window.onload = () => {
+  favDialog.style.display = "none";
   game.startTimer("P2");
 };
 
@@ -111,7 +134,10 @@ window.addEventListener("resize", adjust);
 
 //Pause screen dialog box
 pauseBtn.addEventListener("click", () => {
+  console.log(game.historyP1);
+  console.log(game.historyP2);
   favDialog.showModal();
+  favDialog.style.display = "flex";
   game.toggleTimer();
 });
 
@@ -122,7 +148,17 @@ restartBtn.addEventListener("click", () => {
 //resumes the game
 resumeBtn.addEventListener("click", () => {
   favDialog.close();
+  favDialog.style.display = "none";
   game.toggleTimer();
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+  try {
+    localStorage.removeItem("games");
+    window.location.reload();
+  } catch (e) {
+    console.error("An error occurred while resetting history: " + e);
+  }
 });
 
 function adjust() {

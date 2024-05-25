@@ -13,6 +13,7 @@ export default class Game {
     this.historyP2 = [];
     this.from = "";
     this.to = "";
+    this.fromSwap = "";
   }
 
   recordMove(pieceMoved, from, to) {
@@ -122,14 +123,29 @@ export default class Game {
   }
 
   endGame(winner, msg) {
+    try {
+      let game = JSON.parse(localStorage.getItem("games")) || [];
+      let n = game.length;
+      console.log(n);
+      game.push({ HP1: this.historyP1, HP2: this.historyP2 });
+      console.log(game);
+
+      localStorage.setItem("games", JSON.stringify(game));
+    } catch (e) {
+      if (e.name == "QuotaExceededError") {
+        document.getElementById("pauseScreen").showModal();
+        document.getElementById("pauseScreen").style.display = "flex";
+        document.getElementById("game-msg").textContent =
+          "Local storage is full. Please reset the memory.";
+        document.getElementById("resume").style.display = "none";
+        document.getElementById("restart").style.display = "none";
+      }
+    }
     document.getElementById("pauseScreen").showModal();
-    alert(msg + `, ${winner} wins!!`);
-    this.stopTimer("P1");
-    this.stopTimer("P2");
-    setTimeout(()=>{
-      window.location.reload();
-    },3000);
-    // Additional logic to freeze the game
+    document.getElementById("pauseScreen").style.display = "flex";
+    document.getElementById("game-msg").textContent =
+      msg + `, ${winner} wins!!`;
+    document.getElementById("resume").style.display = "none";
   }
 
   createGameBoard() {
@@ -172,8 +188,6 @@ export default class Game {
         }
       });
       this.switchTimer();
-      console.log(this.historyP1);
-      console.log(this.historyP2);
     }
     //setting the playerToMove property for the next move
     if (selectedPieceId.slice(-2) == "P1") {
@@ -278,9 +292,14 @@ export default class Game {
   }
 
   removeHighlights(board) {
-    Array.from(board).forEach((square) => {
+    Array.from(board.querySelectorAll(".square")).forEach((square) => {
       if (square.classList.contains("highlighted")) {
         square.classList.remove("highlighted");
+      }
+    });
+    Array.from(board.querySelectorAll(".pieces")).forEach((piece) => {
+      if (piece.classList.contains("swapable")) {
+        piece.classList.remove("swapable");
       }
     });
   }
@@ -343,5 +362,55 @@ export default class Game {
     }
     console.log(this.historyP1);
     console.log(this.historyP2);
+  }
+
+  swapPiece(piece) {
+    const toSwap = this.pieces.find((p) => p.id == piece);
+    const tile1 = this.fromSwap.element.parentNode.id;
+    const tile2 = toSwap.element.parentNode.id;
+    this.fromSwap.swap(tile2);
+    toSwap.swap(tile1);
+    this.recordMove(piece, tile1, tile2);
+
+    //printing the move
+    const history = document.querySelector(".historyPage");
+    const move = document.createElement("p");
+    move.textContent = `${piece.slice(
+      0,
+      -3
+    )} was swapped with ${this.fromSwap.id.slice(0, -3)}`;
+    if (this.PlayerToMove == "P1") {
+      move.style.color = "brown";
+    } else {
+      move.style.color = "#005ed8";
+    }
+    if (history.firstChild) {
+      history.insertBefore(move, history.firstChild);
+    } else {
+      history.appendChild(move);
+    }
+
+    //searching for all the cannons to shoot after move has been made
+    this.pieces.forEach((piece) => {
+      if (piece.id.slice(-2) == this.PlayerToMove) {
+        if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+          piece.shootCannon();
+        }
+      }
+    });
+    this.switchTimer();
+
+    //setting the playerToMove property for the next move
+    this.PlayerToMove = this.PlayerToMove === "P1" ? "P2" : "P1";
+  }
+
+  highlightSwapables(board, selectedPiece) {
+    this.fromSwap = this.pieces.find((p) => p.id == selectedPiece);
+    //removing movable highlights
+    this.removeHighlights(board);
+    Array.from(board.querySelectorAll(".pieces")).forEach((p) => {
+      if (p.id.slice(0, -3) !== "titan" && p.id !== selectedPiece)
+        p.classList.add("swapable");
+    });
   }
 }

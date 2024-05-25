@@ -95,7 +95,7 @@ body {
   margin-right: 20px;
 }
 .navbar button,
-#rotateBtn {
+#rotateBtn,#swapBtn {
   background-color: transparent;
   color: var(--base-color);
   padding: 10px 20px;
@@ -106,17 +106,18 @@ body {
   box-shadow: var(--navbar-btn-box-shadow);
 }
 .navbar button:hover,
-#rotateBtn:hover {
+#rotateBtn:hover,#swapBtn:hover {
   cursor: pointer;
   color: var(--navbar-hover-color);
   text-shadow: var(--navbar-hover-text-shadow);
   font-weight: bold;
 }
+
 #player-to-move{
   text-shadow: 0px 0px 15px rgba(106, 255, 83, 0.812);
   font-weight: bold;
 }
-#rotateBtn {
+#rotateBtn,#swapBtn {
   padding: 3px 8px;
   visibility: hidden;
 }
@@ -175,6 +176,7 @@ body {
 }
 #btn-container {
   display: flex;
+  gap: 3vw;
   justify-content: center;
 }
 
@@ -194,7 +196,7 @@ body {
   justify-content: center;
   align-items: center;
 }
-.highlighted {
+.highlighted,.swapable {
   box-shadow: var(--board-box-shadow);
 }
 .pieces {
@@ -272,12 +274,16 @@ body {
   height: 45vh;
   width: 45vw;
 }
-#dialog-container button:hover {
+#dialog-container button:hover,#reset:hover {
   cursor: pointer;
   transform: scale(1.15);
   filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.856));
 }
 #pauseScreen {
+  max-width: 70vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   font-weight: bolder;
   font-size: 2em;
@@ -288,7 +294,7 @@ body {
   border: 5px solid rgba(71, 71, 71, 0.438);
   background-color: rgba(0, 0, 0, 0.719);
   overflow: hidden;
-  text-wrap: pretty;
+  text-wrap: wrap;
 }
 #pauseScreen::before {
   content: "";
@@ -312,7 +318,7 @@ body {
   backdrop-filter: blur(3px);
 }
 #resume,
-#restart {
+#restart,#reset {
   transition: 0.2s ease-in-out;
   border: none;
   border-radius: 5px;
@@ -336,6 +342,13 @@ body {
   padding: 0px;
   width: min(8vw, 60px);
 }
+#reset{
+  font-size: 0.65em;
+}
+/* #reset:hover{
+  cursor: pointer;
+  transform: scale(1.1);
+} */
 
 .footer {
   padding: 10px;

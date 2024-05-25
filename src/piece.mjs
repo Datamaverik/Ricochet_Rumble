@@ -25,9 +25,9 @@ export default class Piece {
     this.element = piece;
   }
 
-  removePieceFromBoard() {
-    if (this.element && this.element.parentNode) {
-      this.element.parentNode.removeChild(this.element);
+  removePieceFromBoard(piece) {
+    if (piece && piece.parentNode) {
+      piece.parentNode.removeChild(piece);
     }
   }
 
@@ -43,6 +43,11 @@ export default class Piece {
     if (targetTile && this.canMoveToTile(targetTileId)) {
       targetTile.appendChild(this.element);
     }
+  }
+
+  swap(tile){
+    const T = document.getElementById(tile);
+    T.appendChild(this.element);
   }
 
   shootCannon() {
@@ -86,6 +91,7 @@ export default class Piece {
       const firstChild = targetTile.firstChild;
       //checking if the first child is a piece or not
       if (firstChild.classList.contains("pieces")) {
+        //checking if the titan is hit 
         if (firstChild.id.slice(0, -3) == "titan") {
           
           let playerWon;
@@ -139,19 +145,31 @@ export default class Piece {
           if (this.cannonDirection == "up") this.cannonDirection = "left";
           else if (this.cannonDirection == "right")
             this.cannonDirection = "down";
-          else return true;
+          else {
+            this.removePieceFromBoard(firstChild);
+            return true;
+          }
         } else if (deflectedTo == "right" && selectedPiece == "P1") {
           if (this.cannonDirection == "left") this.cannonDirection = "down";
           else if (this.cannonDirection == "up") this.cannonDirection = "right";
-          else return true;
+          else{
+            this.removePieceFromBoard(firstChild);
+            return true;
+          }
         } else if (deflectedTo == "left" && selectedPiece == "P2") {
           if (this.cannonDirection == "down") this.cannonDirection = "left";
           else if (this.cannonDirection == "right") this.cannonDirection = "up";
-          else return true;
+          else {
+            this.removePieceFromBoard(firstChild);
+            return true;
+          }
         } else if (deflectedTo == "right" && selectedPiece == "P2") {
           if (this.cannonDirection == "down") this.cannonDirection = "right";
           else if (this.cannonDirection == "left") this.cannonDirection = "up";
-          else return true;
+          else {
+            this.removePieceFromBoard(firstChild);
+            return true;
+          }
         }
       }
     }
