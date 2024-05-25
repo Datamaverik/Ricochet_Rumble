@@ -60,11 +60,14 @@ gameBoard.addEventListener("click", (e) => {
   if (isNaN(parseInt(newSelectedPiece))) {
     selectedPiece = newSelectedPiece;
     //highlighting the movable tiles
-    game.highlightValidMoves(
-      gameBoard.querySelectorAll(".square"),
-      e.target.parentNode.id,
-      selectedPiece
-    );
+    if (selectedPiece.slice(-2) == game.PlayerToMove) {
+      game.highlightValidMoves(
+        gameBoard.querySelectorAll(".square"),
+        e.target.parentNode.id,
+        selectedPiece
+      );
+    }
+    else game.removeHighlights(gameBoard);
   } else if (e.target.classList.contains("highlighted")) {
     tileId = e.target.id;
 
@@ -99,10 +102,12 @@ gameBoard.addEventListener("click", (e) => {
 });
 
 rotateBtn.addEventListener("click", () => {
-  game.rotatePiece(selectedPiece, gameBoard.querySelectorAll(".square"));
+  game.rotatePiece(selectedPiece, gameBoard);
+  swapBtn.style.visibility = "hidden";
 });
 
 swapBtn.addEventListener("click", () => {
+  game.removeHighlights(gameBoard);
   rotateBtn.style.visibility = "hidden";
   game.highlightSwapables(gameBoard, selectedPiece);
 });

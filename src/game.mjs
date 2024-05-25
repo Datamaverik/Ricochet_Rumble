@@ -320,6 +320,7 @@ export default class Game {
           console.log(pieceToRotate.style.transform);
         } else if (orientation == "scaleY(-1)")
           pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
+          else if(orientation=="scaleX(-1)")pieceToRotate.style.transform="scaleX(1)";
         else pieceToRotate.style.transform = "scaleX(-1)";
 
         this.recordMove(selectedPiece, this.from, this.to);
@@ -334,9 +335,10 @@ export default class Game {
 
         if (orientation == "scaleY(-1) scaleX(-1)") {
           pieceToRotate.style.transform = "scaleY(-1)";
-          console.log(pieceToRotate.style.transform);
         } else if (orientation == "scaleY(-1)")
           pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
+        else if (orientation == "scaleX(-1)")
+          pieceToRotate.style.transform = "scaleX(1)";
         else pieceToRotate.style.transform = "scaleX(-1)";
 
         this.recordMove(selectedPiece, this.from, this.to);
@@ -360,8 +362,6 @@ export default class Game {
     } else {
       this.PlayerToMove = "P1";
     }
-    console.log(this.historyP1);
-    console.log(this.historyP2);
   }
 
   swapPiece(piece) {
@@ -409,7 +409,11 @@ export default class Game {
     //removing movable highlights
     this.removeHighlights(board);
     Array.from(board.querySelectorAll(".pieces")).forEach((p) => {
-      if (p.id.slice(0, -3) !== "titan" && p.id !== selectedPiece)
+      if (
+        p.id.slice(0, -3) !== "titan" &&
+        p.id !== selectedPiece &&
+        p.id.slice(0, -3) !== "cannon"
+      )
         p.classList.add("swapable");
     });
   }

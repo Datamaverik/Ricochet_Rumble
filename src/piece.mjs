@@ -45,7 +45,7 @@ export default class Piece {
     }
   }
 
-  swap(tile){
+  swap(tile) {
     const T = document.getElementById(tile);
     T.appendChild(this.element);
   }
@@ -72,9 +72,32 @@ export default class Piece {
   moveCannonBall(tileId) {
     const cannonBall = document.createElement("div");
     cannonBall.classList.add("cannonball");
-    cannonBall.style.backgroundColor = "green";
+    cannonBall.innerHTML = `<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="1280.000000pt" height="886.000000pt" viewBox="0 0 1280.000000 886.000000"
+ preserveAspectRatio="xMidYMid meet">
+<metadata>
+Created by potrace 1.15, written by Peter Selinger 2001-2017
+</metadata>
+<g transform="translate(0.000000,886.000000) scale(0.100000,-0.100000)"
+ stroke="none">
+<path d="M9696 8576 l-169 -246 -157 0 -157 0 -23 183 c-12 100 -26 202 -29
+227 l-6 45 -2150 3 c-2278 3 -2309 3 -2595 -44 -1572 -258 -3159 -1662 -3541
+-3133 -50 -194 -70 -339 -76 -549 -6 -212 4 -344 42 -537 180 -913 890 -1894
+1850 -2557 581 -401 1192 -650 1825 -744 186 -27 834 -34 2770 -32 l1875 3 28
+245 c15 135 30 260 33 278 l5 32 173 0 174 0 158 -242 c87 -134 161 -246 164
+-251 4 -4 357 -3 785 3 651 9 783 14 807 26 169 88 305 802 372 1959 33 568
+40 846 40 1670 0 1369 -50 2341 -159 3060 -75 494 -157 755 -250 803 -12 6
+-253 14 -615 21 -327 6 -687 13 -800 16 l-205 6 -169 -245z"/>
+</g>
+</svg>`;
+    // cannonBall.style.backgroundColor = "green";
+    if(this.cannonDirection=="up")cannonBall.style.transform = `rotate(90deg)`;
+    else if(this.cannonDirection=="down")cannonBall.style.transform = `rotate(-90deg)`;
+    else if(this.cannonDirection=="left")cannonBall.style.transform = `rotate(0deg)`;
+    else cannonBall.style.transform = `rotate(180deg)`;
 
-    document.getElementById(tileId).appendChild(cannonBall);
+    if (document.getElementById(tileId))
+      document.getElementById(tileId).appendChild(cannonBall);
 
     setTimeout(() => {
       if (cannonBall.parentNode) {
@@ -91,9 +114,8 @@ export default class Piece {
       const firstChild = targetTile.firstChild;
       //checking if the first child is a piece or not
       if (firstChild.classList.contains("pieces")) {
-        //checking if the titan is hit 
+        //checking if the titan is hit
         if (firstChild.id.slice(0, -3) == "titan") {
-          
           let playerWon;
           if (firstChild.id.slice(-2) == "P1") playerWon = "P2";
           else playerWon = "P1";
@@ -101,6 +123,16 @@ export default class Piece {
         }
         //updating the selected piece
         selectedPiece = firstChild.id.slice(-2);
+        //allowing cannon ball to pass through tank from one direction
+        if (firstChild.id.slice(0, -3) == "tank") {
+          if (this.cannonDirection == "left" && firstChild.id.slice(-2) == "P1")
+            return false;
+          if (
+            this.cannonDirection == "right" &&
+            firstChild.id.slice(-2) == "P2"
+          )
+            return false;
+        }
         //checking if its not cannon, semiRicochet or ricochet
         if (
           firstChild.id.slice(0, -3) !== "cannon" &&
@@ -152,7 +184,7 @@ export default class Piece {
         } else if (deflectedTo == "right" && selectedPiece == "P1") {
           if (this.cannonDirection == "left") this.cannonDirection = "down";
           else if (this.cannonDirection == "up") this.cannonDirection = "right";
-          else{
+          else {
             this.removePieceFromBoard(firstChild);
             return true;
           }
@@ -173,8 +205,13 @@ export default class Piece {
         }
       }
     }
-    if (tileId % 8 == 0 || tileId % 8 == 1 || tileId < 9 || tileId > 56) {
+    if (tileId < 0 || tileId > 64) {
       return true;
+    }
+    if (tileId % 8 == 0 || tileId % 8 == 1) {
+      if (this.cannonDirection == "up" || this.cannonDirection == "down")
+        return false;
+      else return true;
     }
     return false;
   }
