@@ -1,4 +1,5 @@
 import Piece from "./piece.mjs";
+import { addClasses, addPieces } from "./utility-function.mjs";
 
 export default class Game {
   constructor(boardSelector) {
@@ -19,6 +20,65 @@ export default class Game {
       move: new Audio("./src/sounds/movePiece.wav"),
       shoot: new Audio("./src/sounds/cannon2.wav"),
     };
+  }
+
+  replay() {
+    this.resetBoard();
+    this.PlayerToMove = "P1";
+    document.getElementById("pauseScreen").close();
+    document.getElementById("pauseScreen").style.display = "none";
+    this.disableBoard();
+    this.stopTimer("P1");
+    this.stopTimer("P2");
+    const hist = JSON.parse(localStorage.getItem("games")) || [];
+    setTimeout(()=>{
+      for (let i = 0; i < hist[hist.length - 1].length; i++) {
+        setTimeout(() => {
+          // console.log(this.moveHist[i]);
+          const move = this.moveHist[i];
+          const peice = this.pieces.find((p) => p.id == move.piece);
+          if (move.spec == null) {
+            this.playSound("move");
+            peice.swap(move.to);
+          } else if (move.spec == "rotate") {
+            this.playSound("move");
+            peice.rotate();
+          } else if (move.spec == "swap") {
+            this.playSound("move");
+            peice.swap(move.to);
+            i = i + 1;
+            const move2 = this.moveHist[i];
+            const peice2 = this.pieces.find((p) => p.id == move2.piece);
+            peice2.swap(move2.to);
+          }
+          //searching for all the cannons to shoot after move has been made
+          this.pieces.forEach((piece) => {
+            if (piece.id.slice(-2) == this.PlayerToMove) {
+              if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+                this.playSound("shoot");
+                piece.shootCannon();
+              }
+            }
+          });
+          //setting the playerToMove property for the next move
+          if (this.PlayerToMove == "P1") {
+            this.PlayerToMove = "P2";
+          } else {
+            this.PlayerToMove = "P1";
+          }
+        }, i * 1200);
+      }
+    },1200);
+  }
+
+  resetBoard() {
+    this.pieces.forEach((piece) => {
+      piece.removePieceFromBoard();
+    });
+    this.pieces = [];
+    addPieces(this);
+    addClasses();
+    console.log("reset the board");
   }
 
   playSound(sound) {
@@ -185,11 +245,7 @@ export default class Game {
   endGame(winner, msg) {
     try {
       let game = JSON.parse(localStorage.getItem("games")) || [];
-      let n = game.length;
-      console.log(n);
-      game.push({ HP1: this.historyP1, HP2: this.historyP2 });
-      console.log(game);
-
+      game.push(this.moveHist);
       localStorage.setItem("games", JSON.stringify(game));
     } catch (e) {
       if (e.name == "QuotaExceededError") {
@@ -201,6 +257,7 @@ export default class Game {
         document.getElementById("restart").style.display = "none";
       }
     }
+    document.getElementById("replay").style.display = "block";
     document.getElementById("pauseScreen").showModal();
     document.getElementById("pauseScreen").style.display = "flex";
     document.getElementById("game-msg").textContent =

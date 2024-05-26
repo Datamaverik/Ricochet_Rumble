@@ -21,6 +21,7 @@ const favDialog = document.getElementById("pauseScreen");
 
 const undo = document.getElementById("undo");
 const redo = document.getElementById("redo");
+const replay = document.getElementById("replay");
 
 // Get the game board element
 const gameBoard = document.querySelector(".game-board");
@@ -34,8 +35,6 @@ game.createGameBoard();
 game.addPiece("titan-P1", "brown", 6);
 game.addPiece("tank-P1", "brown", 13);
 game.addPiece("ricochet-P1", "brown", 4);
-const piece = document.getElementById("ricochet-P1");
-piece.style.transform = "scaleY(-1) scaleX(-1)";
 game.addPiece("semiRicochet-P1", "brown", 11);
 game.addPiece("cannon-P1", "brown", 2);
 
@@ -46,6 +45,8 @@ game.addPiece("ricochet-P2", "#005ed8", 61);
 game.addPiece("semiRicochet-P2", "#005ed8", 54);
 game.addPiece("cannon-P2", "#005ed8", 63);
 
+const piece = document.getElementById("ricochet-P1");
+piece.style.transform = "scaleY(-1) scaleX(-1)";
 addClasses();
 game.initTimers();
 // game.startTimer("P1")
@@ -124,6 +125,10 @@ redo.addEventListener("click", () => {
   game.removeHighlights(gameBoard);
   game.redoMove();
 });
+
+replay.addEventListener("click",()=>{
+  game.replay();
+})
 
 playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 

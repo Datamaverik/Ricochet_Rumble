@@ -271,3 +271,22 @@ export function addClasses() {
   document.getElementById("ricochet-P2").classList.add("left");
   document.getElementById("semiRicochet-P2").classList.add("left");
 }
+
+export function addPieces(game){
+  //Adding pieces for player 1
+  game.addPiece("titan-P1", "brown", 6);
+  game.addPiece("tank-P1", "brown", 13);
+  game.addPiece("ricochet-P1", "brown", 4);
+  game.addPiece("semiRicochet-P1", "brown", 11);
+  game.addPiece("cannon-P1", "brown", 2);
+
+  //Adding pieces for player 2
+  game.addPiece("titan-P2", "#005ed8", 59);
+  game.addPiece("tank-P2", "#005ed8", 52);
+  game.addPiece("ricochet-P2", "#005ed8", 61);
+  game.addPiece("semiRicochet-P2", "#005ed8", 54);
+  game.addPiece("cannon-P2", "#005ed8", 63);
+
+  const piece = document.getElementById("ricochet-P1");
+  piece.style.transform = "scaleY(-1) scaleX(-1)";
+}

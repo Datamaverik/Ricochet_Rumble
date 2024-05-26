@@ -26,9 +26,9 @@ export default class Piece {
     this.element = piece;
   }
 
-  removePieceFromBoard(piece) {
-    if (piece && piece.parentNode) {
-      piece.parentNode.removeChild(piece);
+  removePieceFromBoard() {
+    if (this.element && this.element.parentNode) {
+      this.element.parentNode.removeChild(this.element);
     }
   }
 

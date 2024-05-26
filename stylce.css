@@ -302,7 +302,7 @@ body {
   width: 45vw;
 }
 #dialog-container button:hover,
-#reset:hover {
+#reset:hover,#replay:hover {
   cursor: pointer;
   transform: scale(1.15);
   filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.856));
@@ -346,7 +346,7 @@ body {
 }
 #resume,
 #restart,
-#reset {
+#reset,#replay {
   transition: 0.2s ease-in-out;
   border: none;
   border-radius: 5px;
@@ -370,8 +370,11 @@ body {
   padding: 0px;
   width: min(8vw, 60px);
 }
-#reset {
+#reset,#replay {
   font-size: 0.65em;
+}
+#replay{
+  display: none;
 }
 #moveBtn {
   width: 100%;
