@@ -14,6 +14,11 @@ export default class Game {
     this.to = "";
     this.fromSwap = "";
     this.ptr = 0;
+
+    this.sounds = {
+      move: new Audio("/src/sounds/movePiece.wav"),
+      shoot: new Audio("/src/sounds/cannon2.wav"),
+    };
   }
 
   recordMove(pieceMoved, from, to, spec) {
@@ -37,6 +42,13 @@ export default class Game {
       else if (move.spec == "rotate") {
         peice.rotate();
       }
+      else if(move.spec=="swap"){
+        peice.swap(move.from);
+        this.ptr--;
+        const move2 = this.moveHist[this.ptr];
+        const peice2 = this.pieces.find((p) => p.id == move2.piece);
+        peice2.swap(move2.from);
+      }
     }
   }
 
@@ -48,6 +60,13 @@ export default class Game {
       if (move.spec == null) peice.swap(move.to);
       else if (move.spec == "rotate") {
         peice.rotate();
+      } 
+      else if (move.spec == "swap") {
+        peice.swap(move.to);
+        const move2 = this.moveHist[this.ptr];
+        this.ptr++;
+        const peice2 = this.pieces.find((p) => p.id == move2.piece);
+        peice2.swap(move2.to);
       }
     }
     if (this.ptr >= this.moveHist.length) {
@@ -214,11 +233,13 @@ export default class Game {
       this.to = targetTileId;
       this.recordMove(selectedPieceId, this.from, this.to, null);
       this.printMoveHist(selectedPieceId, this.from, this.to);
+      this.sounds.move.play();
       piece.movePiece(targetTileId);
       //searching for all the cannons to shoot after move has been made
       this.pieces.forEach((piece) => {
         if (piece.id.slice(-2) == this.PlayerToMove) {
           if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+            this.sounds.shoot.play();
             piece.shootCannon();
           }
         }
@@ -387,6 +408,7 @@ export default class Game {
     this.pieces.forEach((piece) => {
       if (piece.id.slice(-2) == this.PlayerToMove) {
         if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+          this.sounds.shoot.play();
           piece.shootCannon();
         }
       }
@@ -404,9 +426,11 @@ export default class Game {
     const toSwap = this.pieces.find((p) => p.id == piece);
     const tile1 = this.fromSwap.element.parentNode.id;
     const tile2 = toSwap.element.parentNode.id;
+    this.sounds.move.play();
     this.fromSwap.swap(tile2);
     toSwap.swap(tile1);
-    this.recordMove(piece, tile1, tile2, "swap");
+    this.recordMove(this.fromSwap.id,tile1,tile2,"swap");
+    this.recordMove(toSwap.id,tile2,tile1,"swap");
 
     //printing the move
     const history = document.querySelector(".historyPage");
@@ -430,6 +454,7 @@ export default class Game {
     this.pieces.forEach((piece) => {
       if (piece.id.slice(-2) == this.PlayerToMove) {
         if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+          this.sounds.shoot.play();
           piece.shootCannon();
         }
       }

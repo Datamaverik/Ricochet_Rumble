@@ -8,6 +8,7 @@ export default class Piece {
     this.element = null;
     this.timeOutIds = [];
     this.cannonDirection = "down";
+    this.deflect = new Audio("/src/sounds/deflect.wav");
   }
 
   addPieceToBoard(board, tileId) {
@@ -151,11 +152,13 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
           firstChild.id.slice(0, -3) !== "semiRicochet" &&
           firstChild.id.slice(0, -3) !== "ricochet"
         ) {
+          this.deflect.play();
           return true;
         }
       }
       //defining the cannon ball direction based on the orientation of the semi ricochet which deflects from both side
       if (firstChild.id.slice(0, -3) == "semiRicochet") {
+        this.deflect.play();
         deflectedTo = firstChild.classList[1];
         //turn logic for "/" this shaped semi ricochet
         if (
@@ -183,6 +186,7 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
       }
       //turn logic for the ricochet which can deflect from only one side
       else if (firstChild.id.slice(0, -3) == "ricochet") {
+        this.deflect.play();
         deflectedTo = firstChild.classList[1];
 
         if (deflectedTo == "left" && selectedPiece == "P1") {
