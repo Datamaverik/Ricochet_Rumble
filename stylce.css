@@ -434,6 +434,7 @@ body {
   }
   .game-board {
     margin: 0px;
+    margin-bottom: 10px;
     grid-template-columns: repeat(8, 40px);
     grid-template-rows: repeat(8, 40px);
   }
@@ -462,22 +463,64 @@ body {
   }
   .overallCont {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+  }
+  .historyPage {
+    margin-left: 5px;
+    margin-right: 5px;
+    width: auto;
+    height: 100%;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
   }
 }
 
 @media (max-width: 350px) {
+  body {
+    overflow: hidden;
+  }
+  #player-to-move {
+    margin-top: 15px;
+  }
   .game-board {
     margin: 0px;
+    margin-bottom: 10px;
     grid-template-columns: repeat(8, 35px);
     grid-template-rows: repeat(8, 35px);
   }
   .navbar {
     width: 100%;
   }
+  #dialog-container {
+    gap: 15vw;
+    align-items: center;
+    display: flex;
+    justify-content: space-around;
+  }
+  #resume,
+  #restart {
+    width: 30px;
+    font-size: 0.6em;
+  }
   .cannonball > svg {
     height: 15px;
     width: 15px;
+  }
+  .overallCont {
+    display: flex;
+    flex-direction: column;
+  }
+  .historyPage {
+    margin-left: 5px;
+    margin-right: 5px;
+    width: auto;
+    height: 100%;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
   }
 }
 

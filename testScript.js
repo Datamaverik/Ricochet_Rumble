@@ -182,6 +182,6 @@ function adjust() {
   if (window.innerWidth > 600) {
     history.style.display = "flex";
   } else {
-    history.style.display = "none";
+    history.style.display = "flex";
   }
 }
