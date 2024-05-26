@@ -1,5 +1,5 @@
 import { Icons } from "./utility-function.mjs";
-import { game } from "./testScript.js";
+import { game } from "../testScript.js";
 
 export default class Piece {
   constructor(id, color) {
@@ -51,7 +51,7 @@ export default class Piece {
     T.appendChild(this.element);
   }
 
-  rotate(){
+  rotate() {
     let pieceToRotate = document.getElementById(this.id);
     let orientation = pieceToRotate.style.transform;
     if (orientation == "scaleY(-1) scaleX(-1)") {
@@ -104,9 +104,12 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
 </g>
 </svg>`;
     // cannonBall.style.backgroundColor = "green";
-    if(this.cannonDirection=="up")cannonBall.style.transform = `rotate(90deg)`;
-    else if(this.cannonDirection=="down")cannonBall.style.transform = `rotate(-90deg)`;
-    else if(this.cannonDirection=="left")cannonBall.style.transform = `rotate(0deg)`;
+    if (this.cannonDirection == "up")
+      cannonBall.style.transform = `rotate(90deg)`;
+    else if (this.cannonDirection == "down")
+      cannonBall.style.transform = `rotate(-90deg)`;
+    else if (this.cannonDirection == "left")
+      cannonBall.style.transform = `rotate(0deg)`;
     else cannonBall.style.transform = `rotate(180deg)`;
 
     if (document.getElementById(tileId))

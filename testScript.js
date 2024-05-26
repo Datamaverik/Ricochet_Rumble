@@ -1,6 +1,6 @@
 // script.js
-import Game from "./game.mjs";
-import { changeTheme, addClasses } from "./utility-function.mjs";
+import Game from "./src/game.mjs";
+import { changeTheme, addClasses } from "./src/utility-function.mjs";
 
 let selectedPiece = "",
   tileId,
@@ -69,8 +69,7 @@ gameBoard.addEventListener("click", (e) => {
         e.target.parentNode.id,
         selectedPiece
       );
-    }
-    else game.removeHighlights(gameBoard);
+    } else game.removeHighlights(gameBoard);
   } else if (e.target.classList.contains("highlighted")) {
     tileId = e.target.id;
 
@@ -107,7 +106,7 @@ gameBoard.addEventListener("click", (e) => {
 rotateBtn.addEventListener("click", () => {
   game.rotatePiece(selectedPiece, gameBoard);
   swapBtn.style.visibility = "hidden";
-   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
+  playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 });
 
 swapBtn.addEventListener("click", () => {
@@ -116,13 +115,15 @@ swapBtn.addEventListener("click", () => {
   game.highlightSwapables(gameBoard, selectedPiece);
 });
 
-undo.addEventListener("click",()=>{
+undo.addEventListener("click", () => {
+  game.removeHighlights(gameBoard);
   game.undoMove();
-})
+});
 
-redo.addEventListener("click",()=>{
+redo.addEventListener("click", () => {
+  game.removeHighlights(gameBoard);
   game.redoMove();
-})
+});
 
 playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 
@@ -181,8 +182,8 @@ document.getElementById("reset").addEventListener("click", () => {
 function adjust() {
   overallContainer.appendChild(history);
   if (window.innerWidth > 600) {
-    history.style.display="flex";
+    history.style.display = "flex";
   } else {
-    history.style.display="none";
+    history.style.display = "none";
   }
 }
