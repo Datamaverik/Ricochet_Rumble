@@ -8,7 +8,7 @@ export default class Piece {
     this.element = null;
     this.timeOutIds = [];
     this.cannonDirection = "down";
-    this.deflect = new Audio("/src/sounds/deflect.wav");
+    this.deflect = new Audio("./src/sounds/deflect.wav");
   }
 
   addPieceToBoard(board, tileId) {

@@ -152,8 +152,6 @@ window.addEventListener("resize", adjust);
 
 //Pause screen dialog box
 pauseBtn.addEventListener("click", () => {
-  console.log(game.historyP1);
-  console.log(game.historyP2);
   favDialog.showModal();
   favDialog.style.display = "flex";
   game.toggleTimer();
