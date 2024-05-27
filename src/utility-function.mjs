@@ -1,3 +1,5 @@
+import { positionP1, positionP2 } from "../testScript.js";
+
 //toggle the theme from dark to light and vice-versa
 export function changeTheme() {
   const root = document.documentElement;
@@ -309,4 +311,71 @@ export function giveDir(diff) {
   } else if (diff == -7) {
     return "DownLeft";
   }
+}
+
+export function location() {
+  let newPositionP1, newPositionP2;
+  do {
+    newPositionP1 = generatePositionsP1();
+    newPositionP2 = generatePositionsP2();
+  } while (!checkConditions(newPositionP1, newPositionP2));
+
+  // Update the exported variables
+  Object.assign(positionP1, newPositionP1);
+  Object.assign(positionP2, newPositionP2);
+}
+
+// Generate random positions for player 1
+function generatePositionsP1() {
+  return {
+    titan: getRandomInt(1, 8),
+    tank: getRandomInt(9, 16),
+    ricochet: getRandomInt(1, 16),
+    semiRicochet: getRandomInt(1, 16),
+    cannon: getRandomInt(1, 8),
+  };
+}
+
+// Generate random positions for player 2
+function generatePositionsP2() {
+  return {
+    titan: getRandomInt(57, 64),
+    tank: getRandomInt(49, 56),
+    ricochet: getRandomInt(49, 64),
+    semiRicochet: getRandomInt(49, 64),
+    cannon: getRandomInt(57, 64),
+  };
+}
+
+// Check conditions for valid positions
+function checkConditions(positionsP1, positionsP2) {
+  return (
+    positionsP1.titan + 56 !== positionsP2.cannon &&
+    positionsP2.titan - 56 !== positionsP1.cannon &&
+    positionsP1.cannon + 8 !== positionsP1.ricochet &&
+    positionsP2.cannon + 8 !== positionsP2.ricochet &&
+    positionsP2.titan !== positionsP2.cannon &&
+    positionsP2.titan !== positionsP2.ricochet &&
+    positionsP2.titan !== positionsP2.semiRicochet &&
+    positionsP2.titan !== positionsP2.tank &&
+    positionsP2.cannon !== positionsP2.ricochet &&
+    positionsP2.cannon !== positionsP2.semiRicochet &&
+    positionsP2.ricochet !== positionsP2.semiRicochet &&
+    positionsP2.tank !== positionsP2.ricochet &&
+    positionsP2.tank !== positionsP2.semiRicochet &&
+    positionsP1.titan !== positionsP1.cannon &&
+    positionsP1.titan !== positionsP1.ricochet &&
+    positionsP1.titan !== positionsP1.semiRicochet &&
+    positionsP1.titan !== positionsP1.tank &&
+    positionsP1.cannon !== positionsP1.ricochet &&
+    positionsP1.cannon !== positionsP1.semiRicochet &&
+    positionsP1.ricochet !== positionsP1.semiRicochet &&
+    positionsP1.tank !== positionsP1.ricochet &&
+    positionsP1.tank !== positionsP1.semiRicochet
+  );
+}
+
+// Utility function to get a random integer between min and max (inclusive)
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

@@ -1,10 +1,15 @@
 // script.js
 import Game from "./src/game.mjs";
-import { changeTheme, addClasses } from "./src/utility-function.mjs";
+import { changeTheme, addClasses, location } from "./src/utility-function.mjs";
 
 let selectedPiece = "",
   tileId,
   piceToMove;
+
+//generating randomized playable location
+export let positionP1 = {};
+export let positionP2 = {};
+location();
 
 const history = document.createElement("div");
 history.classList.add("historyPage");
@@ -32,24 +37,23 @@ export const game = new Game(gameBoard);
 game.createGameBoard();
 
 //Adding pieces for player 1
-game.addPiece("titan-P1", "brown", 6);
-game.addPiece("tank-P1", "brown", 13);
-game.addPiece("ricochet-P1", "brown", 4);
-game.addPiece("semiRicochet-P1", "brown", 11);
-game.addPiece("cannon-P1", "brown", 2);
+game.addPiece("titan-P1", "brown", positionP1.titan);
+game.addPiece("tank-P1", "brown", positionP1.tank);
+game.addPiece("ricochet-P1", "brown", positionP1.ricochet);
+game.addPiece("semiRicochet-P1", "brown", positionP1.semiRicochet);
+game.addPiece("cannon-P1", "brown", positionP1.cannon);
 
 //Adding pieces for player 2
-game.addPiece("titan-P2", "#005ed8", 59);
-game.addPiece("tank-P2", "#005ed8", 52);
-game.addPiece("ricochet-P2", "#005ed8", 61);
-game.addPiece("semiRicochet-P2", "#005ed8", 54);
-game.addPiece("cannon-P2", "#005ed8", 63);
+game.addPiece("titan-P2", "#005ed8", positionP2.titan);
+game.addPiece("tank-P2", "#005ed8", positionP2.tank);
+game.addPiece("ricochet-P2", "#005ed8", positionP2.ricochet);
+game.addPiece("semiRicochet-P2", "#005ed8", positionP2.semiRicochet);
+game.addPiece("cannon-P2", "#005ed8", positionP2.cannon);
 
 const piece = document.getElementById("ricochet-P1");
 piece.style.transform = "scaleY(-1) scaleX(-1)";
 addClasses();
 game.initTimers();
-// game.startTimer("P1")
 
 gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
@@ -126,34 +130,20 @@ redo.addEventListener("click", () => {
   game.redoMove();
 });
 
-replay.addEventListener("click",()=>{
+replay.addEventListener("click", () => {
   game.replay();
-})
+});
 
 playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 
 //setting up the initial theme
 document.documentElement.className = "dark";
 
-//handling theme change
-// document.getElementById("theme-button").addEventListener("click", changeTheme);
-
-//handling media queries
-document.addEventListener("DOMContentLoaded", () => {
-  adjust();
-});
-
 //starting the timer for P1 as game starts
 window.onload = () => {
   favDialog.style.display = "none";
   game.startTimer("P2");
 };
-
-// //Initial layout adjustment
-adjust();
-
-// //Adjusting layout on windows resize
-window.addEventListener("resize", adjust);
 
 //Pause screen dialog box
 pauseBtn.addEventListener("click", () => {
@@ -182,11 +172,4 @@ document.getElementById("reset").addEventListener("click", () => {
   }
 });
 
-function adjust() {
-  overallContainer.appendChild(history);
-  if (window.innerWidth > 600) {
-    history.style.display = "flex";
-  } else {
-    history.style.display = "flex";
-  }
-}
+overallContainer.appendChild(history);
