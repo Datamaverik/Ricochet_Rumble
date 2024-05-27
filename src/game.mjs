@@ -15,11 +15,83 @@ export default class Game {
     this.to = "";
     this.fromSwap = "";
     this.ptr = 0;
+    this.singlePlayerMode = false;
+    this.moves = ["move", "rotate", "swap", "move"];
 
     this.sounds = {
       move: new Audio("./src/sounds/movePiece.wav"),
       shoot: new Audio("./src/sounds/cannon2.wav"),
     };
+  }
+
+  botMove() {
+    // Get all player 2 pieces
+    const pieces = this.getPieces("P2");
+
+    // Select a random piece
+    const randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
+
+    //get move to be made
+    const move = this.moves[Math.floor(Math.random() * this.moves.length)];
+    const validMoves = Array.from(this.getValidMoves(randomPiece));
+    let randomMove = 0;
+    // Get valid moves for the selected piece
+    if (validMoves.length > 0) {
+      // Select a random valid move
+      randomMove = validMoves[Math.floor(Math.random() * validMoves.length)].id;
+    }
+
+    //moving pieces
+    if (move == "move") {
+      // Move the piece to the selected tile
+      this.movePiece(randomPiece.id, randomMove);
+    }
+    //rotating pieces
+    else if (move == "rotate") {
+      if (
+        randomPiece.id == "ricochet-P2" ||
+        randomPiece.id == "semiRicochet-P2"
+      ) {
+        this.rotatePiece(randomPiece.id, this.gameBoard);
+      } else {
+        this.movePiece(randomPiece.id, randomMove);
+      }
+    }
+    //swapping pieces
+    else if(move=="swap"){
+      if (randomPiece.id == "semiRicochet-P2") {
+        this.highlightSwapables(this.gameBoard, randomPiece.id);
+        const pieces2 = Array.from(
+          this.gameBoard.querySelectorAll(".swapable")
+        );
+        const randomPiece2 =
+          pieces2[Math.floor(Math.random() * pieces.length)].id;
+        this.swapPiece(randomPiece2);
+      } else {
+        this.movePiece(randomPiece.id, randomMove);
+      }
+    }
+
+    // Switch to player 1's turn
+    this.PlayerToMove = "P1";
+  }
+
+  getPieces(player) {
+    let playerPieces = [];
+    const pieces = this.gameBoard.querySelectorAll(".pieces");
+    Array.from(pieces).forEach((p) => {
+      if (p.id.slice(-2) == player) playerPieces.push(p);
+    });
+    return playerPieces;
+  }
+
+  getValidMoves(piece) {
+    this.highlightValidMoves(
+      this.gameBoard.querySelectorAll(".square"),
+      piece.parentNode.id,
+      piece.id
+    );
+    return this.gameBoard.querySelectorAll(".highlighted");
   }
 
   replay() {
@@ -273,6 +345,8 @@ export default class Game {
     document.getElementById("game-msg").textContent =
       msg + `, ${winner} wins!!`;
     document.getElementById("resume").style.display = "none";
+    document.getElementById("single").style.display = "none";
+    document.getElementById("double").style.display = "none";
   }
 
   createGameBoard() {
@@ -306,7 +380,7 @@ export default class Game {
       this.recordMove(selectedPieceId, this.from, this.to, null);
       this.printMoveHist(selectedPieceId, this.from, this.to);
       this.playSound("move");
-      
+
       //Applying animations to the movement of pieces
       let diff = this.to - this.from;
       let direction = giveDir(diff);
@@ -446,47 +520,32 @@ export default class Game {
     if (this.PlayerToMove == selectedPiece.slice(-2)) {
       let pieceToRotate = document.getElementById(selectedPiece);
       let orientation = pieceToRotate.style.transform;
-      console.log(orientation);
+      // console.log(orientation);
 
       if (pieceToRotate.classList.contains("left")) {
         pieceToRotate.classList.remove("left");
         this.from = "left";
         pieceToRotate.classList.add("right");
         this.to = "right";
-
-        if (orientation == "scaleY(-1) scaleX(-1)") {
-          pieceToRotate.style.transform = "scaleY(-1)";
-        } else if (orientation == "scaleY(-1)")
-          pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
-        else if (orientation == "scaleX(-1)")
-          pieceToRotate.style.transform = "scaleX(1)";
-        else pieceToRotate.style.transform = "scaleX(-1)";
-
-        this.playSound("move");
-        this.recordMove(selectedPiece, this.from, this.to, "rotate");
-        this.printMoveHist(selectedPiece, this.from, this.to);
-        this.removeHighlights(board);
-        rotateBtn.style.visibility = "hidden";
       } else {
         pieceToRotate.classList.remove("right");
         this.from = "right";
         pieceToRotate.classList.add("left");
         this.to = "left";
-
-        if (orientation == "scaleY(-1) scaleX(-1)") {
-          pieceToRotate.style.transform = "scaleY(-1)";
-        } else if (orientation == "scaleY(-1)")
-          pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
-        else if (orientation == "scaleX(-1)")
-          pieceToRotate.style.transform = "scaleX(1)";
-        else pieceToRotate.style.transform = "scaleX(-1)";
-
-        this.playSound("move");
-        this.recordMove(selectedPiece, this.from, this.to, "rotate");
-        this.printMoveHist(selectedPiece, this.from, this.to);
-        this.removeHighlights(board);
-        rotateBtn.style.visibility = "hidden";
       }
+      if (orientation == "scaleY(-1) scaleX(-1)") {
+        pieceToRotate.style.transform = "scaleY(-1)";
+      } else if (orientation == "scaleY(-1)")
+        pieceToRotate.style.transform = "scaleY(-1) scaleX(-1)";
+      else if (orientation == "scaleX(-1)")
+        pieceToRotate.style.transform = "scaleX(1)";
+      else pieceToRotate.style.transform = "scaleX(-1)";
+
+      this.playSound("move");
+      this.recordMove(selectedPiece, this.from, this.to, "rotate");
+      this.printMoveHist(selectedPiece, this.from, this.to);
+      this.removeHighlights(board);
+      rotateBtn.style.visibility = "hidden";
     }
     //searching for all the cannons to shoot after move has been made
     this.pieces.forEach((piece) => {

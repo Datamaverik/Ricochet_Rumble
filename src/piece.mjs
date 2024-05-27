@@ -142,6 +142,28 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
     let selectedPiece = this.element.id.slice(-2);
     let deflectedTo = "";
     const targetTile = document.getElementById(tileId);
+
+    if (tileId < 0 || tileId > 64) {
+      return true;
+    }
+    if (tileId % 8 == 0) {
+      if (
+        this.cannonDirection == "up" ||
+        this.cannonDirection == "down" ||
+        this.cannonDirection == "left"
+      )
+        return false;
+      else return true;
+    } else if (tileId % 8 == 1) {
+      if (
+        this.cannonDirection == "up" ||
+        this.cannonDirection == "down" ||
+        this.cannonDirection == "right"
+      )
+        return false;
+      else return true;
+    }
+    
     if (targetTile && targetTile.hasChildNodes()) {
       const firstChild = targetTile.firstChild;
       //checking if the first child is a piece or not
@@ -240,26 +262,7 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
         }
       }
     }
-    if (tileId < 0 || tileId > 64) {
-      return true;
-    }
-    if (tileId % 8 == 0) {
-      if (
-        this.cannonDirection == "up" ||
-        this.cannonDirection == "down" ||
-        this.cannonDirection == "left"
-      )
-        return false;
-      else return true;
-    } else if (tileId % 8 == 1) {
-      if (
-        this.cannonDirection == "up" ||
-        this.cannonDirection == "down" ||
-        this.cannonDirection == "right"
-      )
-        return false;
-      else return true;
-    }
+    
     return false;
   }
 

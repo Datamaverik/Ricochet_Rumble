@@ -28,6 +28,9 @@ const undo = document.getElementById("undo");
 const redo = document.getElementById("redo");
 const replay = document.getElementById("replay");
 
+const single = document.getElementById("single");
+const double = document.getElementById("double");
+
 // Get the game board element
 const gameBoard = document.querySelector(".game-board");
 
@@ -61,6 +64,13 @@ gameBoard.addEventListener("click", (e) => {
 
   if (e.target.classList.contains("swapable")) {
     game.swapPiece(newSelectedPiece);
+    //Bot
+    if (game.singlePlayerMode) {
+      setTimeout(() => {
+        game.botMove();
+        game.removeHighlights(gameBoard);
+      }, 1500);
+    }
     game.removeHighlights(gameBoard);
   }
 
@@ -81,6 +91,13 @@ gameBoard.addEventListener("click", (e) => {
     if (selectedPiece !== "") {
       piceToMove = document.getElementById(selectedPiece);
       game.movePiece(selectedPiece, tileId);
+      //Bot
+      if (game.singlePlayerMode) {
+        setTimeout(() => {
+          game.botMove();
+          game.removeHighlights(gameBoard);
+        }, 1500);
+      }
       game.removeHighlights(gameBoard);
     }
   } else game.removeHighlights(gameBoard);
@@ -110,6 +127,13 @@ gameBoard.addEventListener("click", (e) => {
 
 rotateBtn.addEventListener("click", () => {
   game.rotatePiece(selectedPiece, gameBoard);
+  //Bot
+  if (game.singlePlayerMode)
+    {setTimeout(() => {
+      game.botMove();
+      game.removeHighlights(gameBoard);
+    }, 1500);
+  }
   swapBtn.style.visibility = "hidden";
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 });
@@ -141,14 +165,39 @@ document.documentElement.className = "dark";
 
 //starting the timer for P1 as game starts
 window.onload = () => {
-  favDialog.style.display = "none";
-  game.startTimer("P2");
+  favDialog.showModal();
+  favDialog.style.display = "flex";
+  resumeBtn.disabled = true;
+  restartBtn.disabled = true;
+  // game.startTimer("P2");
 };
+
+//starting the double player mode
+double.addEventListener("click", () => {
+  favDialog.close();
+  favDialog.style.display = "none";
+  restartBtn.disabled = false;
+  resumeBtn.disabled = false;
+  game.startTimer("P2");
+  game.singlePlayerMode = false;
+});
+
+//starting the single player mode
+single.addEventListener("click", () => {
+  favDialog.close();
+  favDialog.style.display = "none";
+  restartBtn.disabled = false;
+  resumeBtn.disabled = false;
+  game.startTimer("P2");
+  game.singlePlayerMode = true;
+});
 
 //Pause screen dialog box
 pauseBtn.addEventListener("click", () => {
   favDialog.showModal();
   favDialog.style.display = "flex";
+  single.style.display = "none";
+  double.style.display = "none";
   game.toggleTimer();
 });
 

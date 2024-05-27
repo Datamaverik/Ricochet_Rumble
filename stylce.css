@@ -310,7 +310,9 @@ body {
 }
 #dialog-container button:hover,
 #reset:hover,
-#replay:hover {
+#replay:hover,
+#single:hover,
+#double:hover {
   cursor: pointer;
   transform: scale(1.15);
   filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.856));
@@ -355,7 +357,9 @@ body {
 #resume,
 #restart,
 #reset,
-#replay {
+#replay,
+#single,
+#double {
   transition: 0.2s ease-in-out;
   border: none;
   border-radius: 5px;
@@ -386,7 +390,16 @@ body {
 #replay {
   display: none;
 }
+#single, #double{
+  font-size: 0.65em;
+}
 #moveBtn {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+#player-mode{
+  margin-bottom: 10px;
   width: 100%;
   display: flex;
   justify-content: space-around;
