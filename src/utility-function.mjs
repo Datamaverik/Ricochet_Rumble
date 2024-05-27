@@ -272,7 +272,7 @@ export function addClasses() {
   document.getElementById("semiRicochet-P2").classList.add("left");
 }
 
-export function addPieces(game){
+export function addPieces(game) {
   //Adding pieces for player 1
   game.addPiece("titan-P1", "brown", 6);
   game.addPiece("tank-P1", "brown", 13);
@@ -289,4 +289,24 @@ export function addPieces(game){
 
   const piece = document.getElementById("ricochet-P1");
   piece.style.transform = "scaleY(-1) scaleX(-1)";
+}
+
+export function giveDir(diff) {
+  if (diff == 1) {
+    return "Left";
+  } else if (diff == 8) {
+    return "Up";
+  } else if (diff == -8) {
+    return "Down";
+  } else if (diff == -1) {
+    return "Right";
+  } else if (diff == 9) {
+    return "UpLeft";
+  } else if (diff == -9) {
+    return "DownRight";
+  } else if (diff == 7) {
+    return "UpRight";
+  } else if (diff == -7) {
+    return "DownLeft";
+  }
 }

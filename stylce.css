@@ -113,6 +113,8 @@ body {
 }
 #moveBtn button {
   padding: 3px 5px;
+  height: 35px;
+  width: 35px;
 }
 
 #player-to-move {
@@ -214,6 +216,7 @@ body {
   text-shadow: var(--board-text-shadow);
   width: 100%;
   height: 100%;
+  z-index: 1000;
 }
 #cannon-P1 {
   transform: rotate(180deg);
@@ -251,7 +254,7 @@ body {
   color: rgb(220, 45, 45);
   border-radius: 5px;
   padding: 3px;
-  font-size: large;
+  font-size: 3vh;
   font-weight: bold;
   text-shadow: var(--timer-text-shadow);
   background-color: var(--timer-bgc);
@@ -279,6 +282,10 @@ body {
   margin: 0px;
   padding: 0px;
 }
+.movBtn > svg {
+  width: 25px;
+  height: 25px;
+}
 #redo > svg {
   transform: scaleX(-1);
 }
@@ -302,7 +309,8 @@ body {
   width: 45vw;
 }
 #dialog-container button:hover,
-#reset:hover,#replay:hover {
+#reset:hover,
+#replay:hover {
   cursor: pointer;
   transform: scale(1.15);
   filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.856));
@@ -346,7 +354,8 @@ body {
 }
 #resume,
 #restart,
-#reset,#replay {
+#reset,
+#replay {
   transition: 0.2s ease-in-out;
   border: none;
   border-radius: 5px;
@@ -370,10 +379,11 @@ body {
   padding: 0px;
   width: min(8vw, 60px);
 }
-#reset,#replay {
+#reset,
+#replay {
   font-size: 0.65em;
 }
-#replay{
+#replay {
   display: none;
 }
 #moveBtn {
@@ -479,6 +489,20 @@ body {
     text-align: center;
   }
 }
+@media (min-width: 350px) and (max-width: 600px) {
+  #resume,
+  #restart {
+    width: 55px;
+    font-size: 0.7em;
+  }
+  #dialog-container {
+    gap: 16vw;
+  }
+  .timer {
+    width: 40px;
+    font-size: 30px;
+  }
+}
 
 @media (max-width: 350px) {
   body {
@@ -502,11 +526,6 @@ body {
     display: flex;
     justify-content: space-around;
   }
-  #resume,
-  #restart {
-    width: 30px;
-    font-size: 0.6em;
-  }
   .cannonball > svg {
     height: 15px;
     width: 15px;
@@ -514,6 +533,11 @@ body {
   .overallCont {
     display: flex;
     flex-direction: column;
+  }
+  #resume,
+  #restart {
+    width: 30px;
+    font-size: 0.6em;
   }
   .historyPage {
     margin-left: 5px;
@@ -527,9 +551,135 @@ body {
   }
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1440px) {
   .game-board {
-    grid-template-columns: repeat(8, 50px);
-    grid-template-rows: repeat(8, 50px);
+    grid-template-columns: repeat(8, 65px);
+    grid-template-rows: repeat(8, 65px);
+  }
+  .movBtn > svg {
+    width: 35px;
+    height: 35px;
+  }
+  #moveBtn button {
+    padding: 3px 5px;
+    height: 45px;
+    width: 45px;
+  }
+}
+
+@keyframes moveUp {
+  from {
+    transform: translateY(50%) rotate(90deg);
+  }
+  to {
+    transform: translateY(-50%) rotate(90deg);
+  }
+}
+@keyframes moveDown {
+  from {
+    transform: translateY(-50%) rotate(-90deg);
+  }
+  to {
+    transform: translateY(50%) rotate(-90deg);
+  }
+}
+@keyframes moveLeft {
+  from {
+    transform: translateX(50%) rotate(0deg);
+  }
+  to {
+    transform: translateX(-50%) rotate(0deg);
+  }
+}
+@keyframes moveRight {
+  from {
+    transform: translateX(-50%) rotate(180deg);
+  }
+  to {
+    transform: translateX(50%) rotate(180deg);
+  }
+}
+
+.pieces {
+  position: relative;
+}
+
+@keyframes Right {
+  from {
+    left: 200%;
+  }
+  to {
+    left: 0%;
+  }
+}
+
+@keyframes Left {
+  from {
+    left: -200%;
+  }
+  to {
+    left: 0%;
+  }
+}
+
+@keyframes Up {
+  from {
+    top: -200%;
+  }
+  to {
+    top: 0%;
+  }
+}
+
+@keyframes Down {
+  from {
+    top: 200%;
+  }
+  to {
+    top: 0%;
+  }
+}
+
+@keyframes UpRight {
+  from {
+    top: -200%;
+    left: 200%;
+  }
+  to {
+    top: 0%;
+    left: 0%;
+  }
+}
+
+@keyframes UpLeft {
+  from {
+    top: -200%;
+    left: -200%;
+  }
+  to {
+    top: 0%;
+    left: 0%;
+  }
+}
+
+@keyframes DownRight {
+  from {
+    top: 200%;
+    left: 200%;
+  }
+  to {
+    top: 0%;
+    left: 0%;
+  }
+}
+
+@keyframes DownLeft {
+  from {
+    top: 200%;
+    left: -200%;
+  }
+  to {
+    top: 0%;
+    left: 0%;
   }
 }

@@ -1,5 +1,5 @@
 import Piece from "./piece.mjs";
-import { addClasses, addPieces } from "./utility-function.mjs";
+import { addClasses, addPieces, giveDir } from "./utility-function.mjs";
 
 export default class Game {
   constructor(boardSelector) {
@@ -31,7 +31,7 @@ export default class Game {
     this.stopTimer("P1");
     this.stopTimer("P2");
     const hist = JSON.parse(localStorage.getItem("games")) || [];
-    setTimeout(()=>{
+    setTimeout(() => {
       for (let i = 0; i < hist[hist.length - 1].length; i++) {
         setTimeout(() => {
           // console.log(this.moveHist[i]);
@@ -51,6 +51,15 @@ export default class Game {
             const peice2 = this.pieces.find((p) => p.id == move2.piece);
             peice2.swap(move2.to);
           }
+
+          //Applying animations to the movement of pieces
+          let diff = move.to - move.from;
+          let direction = giveDir(diff);
+          peice.element.style.animation = "none";
+          peice.element.offsetHeight; // Trigger reflow
+          peice.element.style.animation = "";
+          peice.element.style.animation = `0.2s ${direction} linear forwards`;
+
           //searching for all the cannons to shoot after move has been made
           this.pieces.forEach((piece) => {
             if (piece.id.slice(-2) == this.PlayerToMove) {
@@ -60,6 +69,7 @@ export default class Game {
               }
             }
           });
+
           //setting the playerToMove property for the next move
           if (this.PlayerToMove == "P1") {
             this.PlayerToMove = "P2";
@@ -68,7 +78,7 @@ export default class Game {
           }
         }, i * 1200);
       }
-    },1200);
+    }, 1200);
   }
 
   resetBoard() {
@@ -296,6 +306,15 @@ export default class Game {
       this.recordMove(selectedPieceId, this.from, this.to, null);
       this.printMoveHist(selectedPieceId, this.from, this.to);
       this.playSound("move");
+      
+      //Applying animations to the movement of pieces
+      let diff = this.to - this.from;
+      let direction = giveDir(diff);
+      piece.element.style.animation = "none";
+      piece.element.offsetHeight; // Trigger reflow
+      piece.element.style.animation = "";
+      piece.element.style.animation = `0.2s ${direction} linear forwards`;
+
       piece.movePiece(targetTileId);
       //searching for all the cannons to shoot after move has been made
       this.pieces.forEach((piece) => {
@@ -427,6 +446,7 @@ export default class Game {
     if (this.PlayerToMove == selectedPiece.slice(-2)) {
       let pieceToRotate = document.getElementById(selectedPiece);
       let orientation = pieceToRotate.style.transform;
+      console.log(orientation);
 
       if (pieceToRotate.classList.contains("left")) {
         pieceToRotate.classList.remove("left");

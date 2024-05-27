@@ -78,7 +78,7 @@ export default class Piece {
           this.clearAllTimeouts();
           return;
         }
-      }, i * 200);
+      }, i * 150);
     }
   }
 
@@ -104,13 +104,19 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
 </g>
 </svg>`;
     // cannonBall.style.backgroundColor = "green";
-    if (this.cannonDirection == "up")
+    if (this.cannonDirection == "up") {
       cannonBall.style.transform = `rotate(90deg)`;
-    else if (this.cannonDirection == "down")
+      cannonBall.style.animation = `0.15s moveUp linear forwards`;
+    } else if (this.cannonDirection == "down") {
+      cannonBall.style.animation = `0.15s moveDown linear forwards`;
       cannonBall.style.transform = `rotate(-90deg)`;
-    else if (this.cannonDirection == "left")
+    } else if (this.cannonDirection == "left") {
+      cannonBall.style.animation = `0.15s moveLeft linear forwards`;
       cannonBall.style.transform = `rotate(0deg)`;
-    else cannonBall.style.transform = `rotate(180deg)`;
+    } else {
+      cannonBall.style.animation = `0.15s moveRight linear forwards`;
+      cannonBall.style.transform = `rotate(180deg)`;
+    }
 
     if (document.getElementById(tileId))
       document.getElementById(tileId).appendChild(cannonBall);
@@ -119,7 +125,7 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
       if (cannonBall.parentNode) {
         cannonBall.parentNode.removeChild(cannonBall);
       }
-    }, 200);
+    }, 150);
   }
 
   detectCollison(tileId) {
