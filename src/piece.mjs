@@ -54,6 +54,16 @@ export default class Piece {
   rotate() {
     let pieceToRotate = document.getElementById(this.id);
     let orientation = pieceToRotate.style.transform;
+    console.log(orientation);
+
+    if (pieceToRotate.classList.contains("left")) {
+      pieceToRotate.classList.remove("left");
+      pieceToRotate.classList.add("right");
+    } else {
+      pieceToRotate.classList.remove("right");
+      pieceToRotate.classList.add("left");
+    }
+
     if (orientation == "scaleY(-1) scaleX(-1)") {
       pieceToRotate.style.transform = "scaleY(-1)";
     } else if (orientation == "scaleY(-1)")
@@ -203,28 +213,28 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
           else if (this.cannonDirection == "right")
             this.cannonDirection = "down";
           else {
-            this.removePieceFromBoard(firstChild);
+            firstChild.parentNode.removeChild(firstChild);
             return true;
           }
         } else if (deflectedTo == "right" && selectedPiece == "P1") {
           if (this.cannonDirection == "left") this.cannonDirection = "down";
           else if (this.cannonDirection == "up") this.cannonDirection = "right";
           else {
-            this.removePieceFromBoard(firstChild);
+            firstChild.parentNode.removeChild(firstChild);
             return true;
           }
         } else if (deflectedTo == "left" && selectedPiece == "P2") {
           if (this.cannonDirection == "down") this.cannonDirection = "left";
           else if (this.cannonDirection == "right") this.cannonDirection = "up";
           else {
-            this.removePieceFromBoard(firstChild);
+            firstChild.parentNode.removeChild(firstChild);
             return true;
           }
         } else if (deflectedTo == "right" && selectedPiece == "P2") {
           if (this.cannonDirection == "down") this.cannonDirection = "right";
           else if (this.cannonDirection == "left") this.cannonDirection = "up";
           else {
-            this.removePieceFromBoard(firstChild);
+            firstChild.parentNode.removeChild(firstChild);
             return true;
           }
         }
@@ -233,8 +243,20 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
     if (tileId < 0 || tileId > 64) {
       return true;
     }
-    if (tileId % 8 == 0 || tileId % 8 == 1) {
-      if (this.cannonDirection == "up" || this.cannonDirection == "down")
+    if (tileId % 8 == 0) {
+      if (
+        this.cannonDirection == "up" ||
+        this.cannonDirection == "down" ||
+        this.cannonDirection == "left"
+      )
+        return false;
+      else return true;
+    } else if (tileId % 8 == 1) {
+      if (
+        this.cannonDirection == "up" ||
+        this.cannonDirection == "down" ||
+        this.cannonDirection == "right"
+      )
         return false;
       else return true;
     }

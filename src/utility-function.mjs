@@ -276,18 +276,18 @@ export function addClasses() {
 
 export function addPieces(game) {
   //Adding pieces for player 1
-  game.addPiece("titan-P1", "brown", 6);
-  game.addPiece("tank-P1", "brown", 13);
-  game.addPiece("ricochet-P1", "brown", 4);
-  game.addPiece("semiRicochet-P1", "brown", 11);
-  game.addPiece("cannon-P1", "brown", 2);
+  game.addPiece("titan-P1", "brown", positionP1.titan);
+  game.addPiece("tank-P1", "brown", positionP1.tank);
+  game.addPiece("ricochet-P1", "brown", positionP1.ricochet);
+  game.addPiece("semiRicochet-P1", "brown", positionP1.semiRicochet);
+  game.addPiece("cannon-P1", "brown", positionP1.cannon);
 
   //Adding pieces for player 2
-  game.addPiece("titan-P2", "#005ed8", 59);
-  game.addPiece("tank-P2", "#005ed8", 52);
-  game.addPiece("ricochet-P2", "#005ed8", 61);
-  game.addPiece("semiRicochet-P2", "#005ed8", 54);
-  game.addPiece("cannon-P2", "#005ed8", 63);
+  game.addPiece("titan-P2", "#005ed8", positionP2.titan);
+  game.addPiece("tank-P2", "#005ed8", positionP2.tank);
+  game.addPiece("ricochet-P2", "#005ed8", positionP2.ricochet);
+  game.addPiece("semiRicochet-P2", "#005ed8", positionP2.semiRicochet);
+  game.addPiece("cannon-P2", "#005ed8", positionP2.cannon);
 
   const piece = document.getElementById("ricochet-P1");
   piece.style.transform = "scaleY(-1) scaleX(-1)";

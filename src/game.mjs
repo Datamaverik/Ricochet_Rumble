@@ -34,7 +34,7 @@ export default class Game {
     setTimeout(() => {
       for (let i = 0; i < hist[hist.length - 1].length; i++) {
         setTimeout(() => {
-          // console.log(this.moveHist[i]);
+          console.log(this.moveHist[i]);
           const move = this.moveHist[i];
           const peice = this.pieces.find((p) => p.id == move.piece);
           if (move.spec == null) {
@@ -76,9 +76,9 @@ export default class Game {
           } else {
             this.PlayerToMove = "P1";
           }
-        }, i * 1200);
+        }, i * 1500);
       }
-    }, 1200);
+    }, 1500);
   }
 
   resetBoard() {
