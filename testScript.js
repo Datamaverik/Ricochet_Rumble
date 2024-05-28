@@ -1,6 +1,6 @@
 // script.js
 import Game from "./src/game.mjs";
-import { changeTheme, addClasses, location } from "./src/utility-function.mjs";
+import { isCannonBallPresent, addClasses, location } from "./src/utility-function.mjs";
 
 let selectedPiece = "",
   tileId,
@@ -66,11 +66,22 @@ gameBoard.addEventListener("click", (e) => {
     game.swapPiece(newSelectedPiece);
     //Bot
     if (game.singlePlayerMode) {
-      setTimeout(() => {
-        game.botMove();
-        game.removeHighlights(gameBoard);
-      }, 1500);
+      const intervalId = setInterval(() => {
+        if (!isCannonBallPresent(gameBoard)) {
+          clearInterval(intervalId);
+          setTimeout(() => {
+            game.botMove();
+            game.removeHighlights(gameBoard);
+          }, 1500);
+        }
+      }, 500);
     }
+    // if (game.singlePlayerMode) {
+    //   setTimeout(() => {
+    //     game.botMove();
+    //     game.removeHighlights(gameBoard);
+    //   }, 1500);
+    // }
     game.removeHighlights(gameBoard);
   }
 
@@ -93,10 +104,15 @@ gameBoard.addEventListener("click", (e) => {
       game.movePiece(selectedPiece, tileId);
       //Bot
       if (game.singlePlayerMode) {
-        setTimeout(() => {
-          game.botMove();
-          game.removeHighlights(gameBoard);
-        }, 1500);
+        const intervalId = setInterval(() => {
+          if (!isCannonBallPresent(gameBoard)) {
+            clearInterval(intervalId);
+            setTimeout(() => {
+              game.botMove();
+              game.removeHighlights(gameBoard);
+            }, 1500);
+          }
+        }, 500);
       }
       game.removeHighlights(gameBoard);
     }
@@ -128,11 +144,16 @@ gameBoard.addEventListener("click", (e) => {
 rotateBtn.addEventListener("click", () => {
   game.rotatePiece(selectedPiece, gameBoard);
   //Bot
-  if (game.singlePlayerMode)
-    {setTimeout(() => {
-      game.botMove();
-      game.removeHighlights(gameBoard);
-    }, 1500);
+  if (game.singlePlayerMode) {
+    const intervalId = setInterval(() => {
+      if (!isCannonBallPresent(gameBoard)) {
+        clearInterval(intervalId);
+        setTimeout(() => {
+          game.botMove();
+          game.removeHighlights(gameBoard);
+        }, 1500);
+      }
+    }, 500);
   }
   swapBtn.style.visibility = "hidden";
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;

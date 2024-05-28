@@ -1,5 +1,9 @@
 import Piece from "./piece.mjs";
-import { addClasses, addPieces, giveDir } from "./utility-function.mjs";
+import {
+  addClasses,
+  addPieces,
+  giveDir,
+} from "./utility-function.mjs";
 
 export default class Game {
   constructor(boardSelector) {
@@ -58,7 +62,7 @@ export default class Game {
       }
     }
     //swapping pieces
-    else if(move=="swap"){
+    else if (move == "swap") {
       if (randomPiece.id == "semiRicochet-P2") {
         this.highlightSwapables(this.gameBoard, randomPiece.id);
         const pieces2 = Array.from(
@@ -103,53 +107,64 @@ export default class Game {
     this.stopTimer("P1");
     this.stopTimer("P2");
     const hist = JSON.parse(localStorage.getItem("games")) || [];
-    setTimeout(() => {
-      for (let i = 0; i < hist[hist.length - 1].length; i++) {
-        setTimeout(() => {
-          console.log(this.moveHist[i]);
-          const move = this.moveHist[i];
-          const peice = this.pieces.find((p) => p.id == move.piece);
-          if (move.spec == null) {
-            this.playSound("move");
-            peice.swap(move.to);
-          } else if (move.spec == "rotate") {
-            this.playSound("move");
-            peice.rotate();
-          } else if (move.spec == "swap") {
-            this.playSound("move");
-            peice.swap(move.to);
-            i = i + 1;
-            const move2 = this.moveHist[i];
-            const peice2 = this.pieces.find((p) => p.id == move2.piece);
-            peice2.swap(move2.to);
-          }
 
-          //Applying animations to the movement of pieces
-          let diff = move.to - move.from;
-          let direction = giveDir(diff);
-          peice.element.style.animation = "none";
-          peice.element.offsetHeight; // Trigger reflow
-          peice.element.style.animation = "";
-          peice.element.style.animation = `0.2s ${direction} linear forwards`;
-
-          //searching for all the cannons to shoot after move has been made
-          this.pieces.forEach((piece) => {
-            if (piece.id.slice(-2) == this.PlayerToMove) {
-              if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
-                this.playSound("shoot");
-                piece.shootCannon();
-              }
-            }
-          });
-
-          //setting the playerToMove property for the next move
-          if (this.PlayerToMove == "P1") {
-            this.PlayerToMove = "P2";
-          } else {
-            this.PlayerToMove = "P1";
-          }
-        }, i * 1500);
+    // Recursive function to replay moves
+    const replayMoves = (i) => {
+      if (i >= hist[hist.length - 1].length) {
+        return; // Base case: exit recursion when all moves are replayed
       }
+
+      setTimeout(() => {
+        let move = this.moveHist[i];
+        let peice = this.pieces.find((p) => p.id == move.piece);
+
+        if (move.spec == null) {
+          this.playSound("move");
+          peice.swap(move.to);
+        } else if (move.spec == "rotate") {
+          this.playSound("move");
+          peice.rotate();
+        } else if (move.spec == "swap") {
+          this.playSound("move");
+          peice.swap(move.to);
+
+          // Handle the next swap move immediately
+          i++;
+          if (i < hist[hist.length - 1].length) {
+            move = this.moveHist[i];
+            peice = this.pieces.find((p) => p.id == move.piece);
+            peice.swap(move.to);
+          }
+        }
+
+        // Applying animations to the movement of pieces
+        let diff = move.to - move.from;
+        let direction = giveDir(diff);
+        peice.element.style.animation = "none";
+        peice.element.offsetHeight; // Trigger reflow
+        peice.element.style.animation = "";
+        peice.element.style.animation = `0.2s ${direction} linear forwards`;
+
+        // Searching for all the cannons to shoot after move has been made
+        this.pieces.forEach((piece) => {
+          if (piece.id.slice(-2) == this.PlayerToMove) {
+            if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+              this.playSound("shoot");
+              piece.shootCannon();
+            }
+          }
+        });
+
+        // Setting the playerToMove property for the next move
+        this.PlayerToMove = this.PlayerToMove === "P1" ? "P2" : "P1";
+
+        // Recursively call the replay function for the next move
+        replayMoves(i + 1);
+      }, 1500);
+    };
+
+    setTimeout(() => {
+      replayMoves(0);
     }, 1500);
   }
 
@@ -402,11 +417,7 @@ export default class Game {
       this.switchTimer();
     }
     //setting the playerToMove property for the next move
-    if (selectedPieceId.slice(-2) == "P1") {
-      this.PlayerToMove = "P2";
-    } else {
-      this.PlayerToMove = "P1";
-    }
+    this.PlayerToMove = this.PlayerToMove === "P1" ? "P2" : "P1";
   }
 
   removePiece(pieceId) {
@@ -431,7 +442,13 @@ export default class Game {
       //different movement logic for cannon
       if (selectedPiece.slice(0, -3) == "cannon") {
         const k = parseInt(targetTile);
-        if (k <= 8 || k >= 57) {
+        if (k <= 7 && k >= 1) {
+          Array.from(board).forEach((square) => {
+            if (square.id == k - 1 || square.id == k + 1)
+              square.classList.add("highlighted");
+          });
+        }
+        if (k <= 63 || k >= 58) {
           Array.from(board).forEach((square) => {
             if (square.id == k - 1 || square.id == k + 1)
               square.classList.add("highlighted");
@@ -558,11 +575,7 @@ export default class Game {
     });
     this.switchTimer();
     //setting the playerToMove property for the next move
-    if (selectedPiece.slice(-2) == "P1") {
-      this.PlayerToMove = "P2";
-    } else {
-      this.PlayerToMove = "P1";
-    }
+    this.PlayerToMove = this.PlayerToMove === "P1" ? "P2" : "P1";
   }
 
   swapPiece(piece) {
@@ -573,7 +586,7 @@ export default class Game {
     this.fromSwap.swap(tile2);
     toSwap.swap(tile1);
     this.recordMove(this.fromSwap.id, tile1, tile2, "swap");
-    this.recordMove(toSwap.id, tile2, tile1, "swap");
+    this.recordMove(toSwap.id, tile2, tile1, null);
 
     //printing the move
     const history = document.querySelector(".historyPage");

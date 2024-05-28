@@ -143,61 +143,47 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
     let deflectedTo = "";
     const targetTile = document.getElementById(tileId);
 
-    if (tileId < 0 || tileId > 64) {
-      return true;
-    }
-    if (tileId % 8 == 0) {
-      if (
-        this.cannonDirection == "up" ||
-        this.cannonDirection == "down" ||
-        this.cannonDirection == "left"
-      )
-        return false;
-      else return true;
-    } else if (tileId % 8 == 1) {
-      if (
-        this.cannonDirection == "up" ||
-        this.cannonDirection == "down" ||
-        this.cannonDirection == "right"
-      )
-        return false;
-      else return true;
-    }
-    
+    //Detcting collision with pieces
     if (targetTile && targetTile.hasChildNodes()) {
       const firstChild = targetTile.firstChild;
       //checking if the first child is a piece or not
       if (firstChild.classList.contains("pieces")) {
-        //checking if the titan is hit
+        //TITAN collision
         if (firstChild.id.slice(0, -3) == "titan") {
           let playerWon;
           if (firstChild.id.slice(-2) == "P1") playerWon = "P2";
           else playerWon = "P1";
           game.endGame(playerWon, "Titan is hit the game is Over!");
         }
-        //updating the selected piece
         selectedPiece = firstChild.id.slice(-2);
-        //allowing cannon ball to pass through tank from one direction
+        //TANK collision
         if (firstChild.id.slice(0, -3) == "tank") {
-          if (this.cannonDirection == "left" && firstChild.id.slice(-2) == "P1")
-            return false;
           if (
+            this.cannonDirection == "left" &&
+            firstChild.id.slice(-2) == "P1"
+          ) {
+            if (tileId % 8 == 1) return true;
+            else return false;
+          } else if (
             this.cannonDirection == "right" &&
             firstChild.id.slice(-2) == "P2"
-          )
-            return false;
+          ) {
+            if (tileId % 8 == 0) return true;
+            else return false;
+          } else {
+            this.deflect.play();
+            return true;}
         }
         //checking if its not cannon, semiRicochet or ricochet
         if (
-          firstChild.id.slice(0, -3) !== "cannon" &&
-          firstChild.id.slice(0, -3) !== "semiRicochet" &&
-          firstChild.id.slice(0, -3) !== "ricochet"
+          firstChild.id.slice(0, -3) == "cannon" ||
+          firstChild.id.slice(0 - 3) == "tank"
         ) {
           this.deflect.play();
           return true;
         }
       }
-      //defining the cannon ball direction based on the orientation of the semi ricochet which deflects from both side
+      //RICOCHET collision
       if (firstChild.id.slice(0, -3) == "semiRicochet") {
         this.deflect.play();
         deflectedTo = firstChild.classList[1];
@@ -225,7 +211,7 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
           else if (this.cannonDirection == "right") this.cannonDirection = "up";
         }
       }
-      //turn logic for the ricochet which can deflect from only one side
+      //SEMI RICOCHET collision
       else if (firstChild.id.slice(0, -3) == "ricochet") {
         this.deflect.play();
         deflectedTo = firstChild.classList[1];
@@ -262,7 +248,29 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
         }
       }
     }
-    
+
+    //Detecting collision with walls
+    if (tileId < 0 || tileId > 64) {
+      return true;
+    }
+    if (tileId % 8 == 0) {
+      if (
+        this.cannonDirection == "up" ||
+        this.cannonDirection == "down" ||
+        this.cannonDirection == "left"
+      )
+        return false;
+      else return true;
+    } else if (tileId % 8 == 1) {
+      if (
+        this.cannonDirection == "up" ||
+        this.cannonDirection == "down" ||
+        this.cannonDirection == "right"
+      )
+        return false;
+      else return true;
+    }
+
     return false;
   }
 

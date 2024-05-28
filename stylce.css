@@ -515,6 +515,12 @@ body {
     width: 40px;
     font-size: 30px;
   }
+  #single,#double,#reset{
+    font-size: 0.6em;
+  }
+  #player-mode{
+    gap: 5vw;
+  }
 }
 
 @media (max-width: 350px) {
@@ -550,6 +556,9 @@ body {
   #resume,
   #restart {
     width: 30px;
+    font-size: 0.6em;
+  }
+  #single,#double,#reset{
     font-size: 0.6em;
   }
   .historyPage {
