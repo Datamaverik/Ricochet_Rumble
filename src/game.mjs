@@ -446,6 +446,10 @@ export default class Game {
             Array.from(board).forEach((square) => {
               if (square.id == k - 1) square.classList.add("highlighted");
             });
+          } else if (k == 1) {
+            Array.from(board).forEach((square) => {
+              if (square.id == k + 1) square.classList.add("highlighted");
+            });
           } else {
             Array.from(board).forEach((square) => {
               if (square.id == k - 1 || square.id == k + 1)
@@ -457,6 +461,10 @@ export default class Game {
           if (k == 57) {
             Array.from(board).forEach((square) => {
               if (square.id == k + 1) square.classList.add("highlighted");
+            });
+          } else if (k == 64) {
+            Array.from(board).forEach((square) => {
+              if (square.id == k - 1) square.classList.add("highlighted");
             });
           } else {
             Array.from(board).forEach((square) => {

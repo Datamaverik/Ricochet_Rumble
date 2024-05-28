@@ -54,7 +54,6 @@ export default class Piece {
   rotate() {
     let pieceToRotate = document.getElementById(this.id);
     let orientation = pieceToRotate.style.transform;
-    console.log(orientation);
 
     if (pieceToRotate.classList.contains("left")) {
       pieceToRotate.classList.remove("left");
