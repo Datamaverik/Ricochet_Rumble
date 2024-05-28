@@ -1,9 +1,5 @@
 import Piece from "./piece.mjs";
-import {
-  addClasses,
-  addPieces,
-  giveDir,
-} from "./utility-function.mjs";
+import { addClasses, addPieces, giveDir } from "./utility-function.mjs";
 
 export default class Game {
   constructor(boardSelector) {
@@ -21,6 +17,7 @@ export default class Game {
     this.ptr = 0;
     this.singlePlayerMode = false;
     this.moves = ["move", "rotate", "swap", "move"];
+    this.isGameEnded = false;
 
     this.sounds = {
       move: new Audio("./src/sounds/movePiece.wav"),
@@ -29,6 +26,7 @@ export default class Game {
   }
 
   botMove() {
+    if (this.isGameEnded) return;
     // Get all player 2 pieces
     const pieces = this.getPieces("P2");
 
@@ -340,6 +338,7 @@ export default class Game {
   }
 
   endGame(winner, msg) {
+    this.isGameEnded = true;
     try {
       let game = JSON.parse(localStorage.getItem("games")) || [];
       game.push(this.moveHist);
@@ -442,17 +441,29 @@ export default class Game {
       //different movement logic for cannon
       if (selectedPiece.slice(0, -3) == "cannon") {
         const k = parseInt(targetTile);
-        if (k <= 7 && k >= 1) {
-          Array.from(board).forEach((square) => {
-            if (square.id == k - 1 || square.id == k + 1)
-              square.classList.add("highlighted");
-          });
+        if (k <= 8 && k >= 1) {
+          if (k == 8) {
+            Array.from(board).forEach((square) => {
+              if (square.id == k - 1) square.classList.add("highlighted");
+            });
+          } else {
+            Array.from(board).forEach((square) => {
+              if (square.id == k - 1 || square.id == k + 1)
+                square.classList.add("highlighted");
+            });
+          }
         }
-        if (k <= 63 || k >= 58) {
-          Array.from(board).forEach((square) => {
-            if (square.id == k - 1 || square.id == k + 1)
-              square.classList.add("highlighted");
-          });
+        if (k <= 64 && k >= 57) {
+          if (k == 57) {
+            Array.from(board).forEach((square) => {
+              if (square.id == k + 1) square.classList.add("highlighted");
+            });
+          } else {
+            Array.from(board).forEach((square) => {
+              if (square.id == k - 1 || square.id == k + 1)
+                square.classList.add("highlighted");
+            });
+          }
         }
       } else {
         let m, l;

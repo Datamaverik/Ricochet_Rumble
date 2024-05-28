@@ -76,13 +76,11 @@ gameBoard.addEventListener("click", (e) => {
         }
       }, 500);
     }
-    // if (game.singlePlayerMode) {
-    //   setTimeout(() => {
-    //     game.botMove();
-    //     game.removeHighlights(gameBoard);
-    //   }, 1500);
-    // }
     game.removeHighlights(gameBoard);
+  }
+
+  if (game.singlePlayerMode && newSelectedPiece.slice(-2) == "P2") {
+    return;
   }
 
   //checking if a valid piece is selected
@@ -190,7 +188,6 @@ window.onload = () => {
   favDialog.style.display = "flex";
   resumeBtn.disabled = true;
   restartBtn.disabled = true;
-  // game.startTimer("P2");
 };
 
 //starting the double player mode
