@@ -1,4 +1,4 @@
-import { positionP1, positionP2 } from "../testScript.js";
+import { positionP1, positionP2, powerUps } from "../testScript.js";
 
 //toggle the theme from dark to light and vice-versa
 export function changeTheme() {
@@ -325,6 +325,52 @@ export function location() {
   Object.assign(positionP2, newPositionP2);
 }
 
+export function PUlocation() {
+  let pul;
+  do {
+    pul = genratePULocation();
+  } while (!condt(pul));
+
+  powerUps.push(...pul);
+}
+
+function genratePULocation() {
+  return [
+    getRandomInt(17, 48),
+    getRandomInt(17, 48),
+    getRandomInt(17, 48),
+    getRandomInt(17, 48),
+    getRandomInt(17, 48),
+    getRandomInt(17, 48),
+  ];
+}
+
+function condt(pul) {
+  for (let i = 0; i < pul.length - 1; i++) {
+    for (let j = i + 1; j < pul.length; j++) {
+      if (pul[i] === pul[j]) return false;
+    }
+  }
+  return true;
+}
+
+export function addPowerUps(gameBoard) {
+  powerUps.forEach((p) => {
+    const powerUp = document.createElement("div");
+    powerUp.innerHTML = `<svg  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	  viewBox="0 0 940.688 940.688"
+	 xml:space="preserve">
+<g>
+	<path d="M885.344,319.071l-258-3.8l-102.7-264.399c-19.8-48.801-88.899-48.801-108.6,0l-102.7,264.399l-258,3.8
+		c-53.4,3.101-75.1,70.2-33.7,103.9l209.2,181.4l-71.3,247.7c-14,50.899,41.1,92.899,86.5,65.899l224.3-122.7l224.3,122.601
+		c45.4,27,100.5-15,86.5-65.9l-71.3-247.7l209.2-181.399C960.443,389.172,938.744,322.071,885.344,319.071z"/>
+</g>
+</svg>`;
+	powerUp.classList.add('powerUp');
+	document.getElementById(p).appendChild(powerUp);
+  });
+}
+
 // Generate random positions for player 1
 function generatePositionsP1() {
   return {
@@ -380,6 +426,6 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function isCannonBallPresent(board){
-	return board.querySelector(".cannonball")!==null;
+export function isCannonBallPresent(board) {
+  return board.querySelector(".cannonball") !== null;
 }

@@ -1,6 +1,6 @@
 // script.js
 import Game from "./src/game.mjs";
-import { isCannonBallPresent, addClasses, location } from "./src/utility-function.mjs";
+import { isCannonBallPresent, addClasses, location,PUlocation, addPowerUps } from "./src/utility-function.mjs";
 
 let selectedPiece = "",
   tileId,
@@ -57,6 +57,11 @@ const piece = document.getElementById("ricochet-P1");
 piece.style.transform = "scaleY(-1) scaleX(-1)";
 addClasses();
 game.initTimers();
+
+//genrating randomized position for power ups
+export let powerUps = [];
+PUlocation();
+addPowerUps(gameBoard);
 
 gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;

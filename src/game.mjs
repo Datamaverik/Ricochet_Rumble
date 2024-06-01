@@ -18,6 +18,8 @@ export default class Game {
     this.singlePlayerMode = false;
     this.moves = ["move", "rotate", "swap", "move"];
     this.isGameEnded = false;
+    this.p1PowerUps = 0;
+    this.p2PowerUps = 0;
 
     this.sounds = {
       move: new Audio("./src/sounds/movePiece.wav"),

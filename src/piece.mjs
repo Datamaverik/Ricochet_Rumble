@@ -9,14 +9,15 @@ export default class Piece {
     this.timeOutIds = [];
     this.cannonDirection = "down";
     this.deflect = new Audio("./src/sounds/deflect.wav");
+    this.power = new Audio("./src/sounds/powerup.mp3");
   }
 
   addPieceToBoard(board, tileId) {
     // Create the piece element and append it to the board
     const piece = document.createElement("div");
+    piece.innerHTML = Icons[this.id.slice(0, -3)];
     piece.setAttribute("id", this.id);
     piece.classList.add("pieces");
-    piece.innerHTML = Icons[this.id.slice(0, -3)];
     piece.style.backgroundColor = this.color;
     Array.from(board.querySelectorAll(".square")).forEach((square) => {
       if (square.id == tileId) {
@@ -145,6 +146,37 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
     //Detcting collision with pieces
     if (targetTile && targetTile.hasChildNodes()) {
       const firstChild = targetTile.firstChild;
+
+      //checking if the first child is power up or not
+      if (firstChild.classList.contains("powerUp")) {
+        const soundClone = this.power.cloneNode();
+        soundClone.play();
+        const history = document.querySelector(".historyPage");
+        const move = document.createElement("p");
+        firstChild.parentNode.removeChild(firstChild);
+
+        if (game.PlayerToMove === "P1") {
+          game.p2PowerUps++;
+          document.getElementById("P2meter").value = game.p2PowerUps / 10;
+          game.moveHist.push({player:"P2",spec:"powerUp"});
+          move.style.color = "#005ed8";
+          move.textContent="Player 2 picked up a power up"
+        } else {
+          game.p1PowerUps++;
+          document.getElementById("P1meter").value = game.p1PowerUps / 10;
+          game.moveHist.push({ player: "P1", spec: "powerUp" });
+          move.style.color = "brown";
+          move.textContent = "Player 1 picked up a power up";
+        }
+
+        //printing on history panel
+        if (history.firstChild) {
+          history.insertBefore(move, history.firstChild);
+        } else {
+          history.appendChild(move);
+        }
+        return false;
+      }
       //checking if the first child is a piece or not
       if (firstChild.classList.contains("pieces")) {
         //TITAN collision
@@ -171,7 +203,8 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
             else return false;
           } else {
             this.deflect.play();
-            return true;}
+            return true;
+          }
         }
         //checking if its not cannon, semiRicochet or ricochet
         if (
