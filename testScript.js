@@ -88,10 +88,14 @@ gameBoard.addEventListener("click", (e) => {
 
   //disabling the board if the cannon ball is still present
   const intervalId = setInterval(() => {
+    rotateBtn.disabled=true;
+    swapBtn.disabled=true;
     gameBoard.classList.add("disabled");
     if (!isCannonBallPresent(gameBoard)) {
       clearInterval(intervalId);
       gameBoard.classList.remove("disabled");
+      rotateBtn.disabled = false;
+      swapBtn.disabled = false;
     }
   }, 500);
 
@@ -317,6 +321,7 @@ single.addEventListener("click", () => {
   favDialog.style.display = "none";
   restartBtn.disabled = false;
   resumeBtn.disabled = false;
+  shop2.disabled = true;
   game.startTimer("P2");
   game.singlePlayerMode = true;
 });
@@ -333,8 +338,8 @@ pauseBtn.addEventListener("click", () => {
 
 //Shop buttons
 shop1.addEventListener("click", () => {
-  game.playSound("shop");
   if (game.PlayerToMove == "P1") {
+    game.playSound("shop");
     if (game.P1addRico) spellRico.disabled = true;
     else spellRico.disabled = false;
     if (game.P1addSemi) spellSemi.disabled = true;
@@ -345,8 +350,8 @@ shop1.addEventListener("click", () => {
 });
 
 shop2.addEventListener("click", () => {
-  game.playSound("shop");
   if (game.PlayerToMove == "P2") {
+    game.playSound("shop");
     if (game.P2addRico) spellRico.disabled = true;
     else spellRico.disabled = false;
     if (game.P2addSemi) spellSemi.disabled = true;

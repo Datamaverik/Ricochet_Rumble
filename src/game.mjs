@@ -188,6 +188,15 @@ export default class Game {
             this.addPiece(piceToMove, "#005ed8", move.to);
             document.getElementById(piceToMove).classList.add("left");
           }
+          //searching for all the cannons to shoot after move has been made
+          this.pieces.forEach((piece) => {
+            if (piece.id.slice(-2) == this.PlayerToMove) {
+              if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+                this.playSound("shoot");
+                piece.shootCannon();
+              }
+            }
+          });
           this.PlayerToMove = this.PlayerToMove === "P1" ? "P2" : "P1";
         } else if (move.spec == "powerSpawn") {
           let pul = [];
@@ -403,7 +412,7 @@ export default class Game {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     //checking if half of time has elasped
-    if ((this.timerP1 + this.timerP2)/2==295) {
+    if ((this.timerP1 + this.timerP2)/2==150) {
       setPowerUp([]);
       PUlocation();
       this.playSound("energy");
