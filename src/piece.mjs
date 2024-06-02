@@ -15,7 +15,9 @@ export default class Piece {
   addPieceToBoard(board, tileId) {
     // Create the piece element and append it to the board
     const piece = document.createElement("div");
-    piece.innerHTML = Icons[this.id.slice(0, -3)];
+    if (this.id.slice(-4).slice(0, 1) == "B")
+      piece.innerHTML = Icons[this.id.slice(0, -4)];
+    else piece.innerHTML = Icons[this.id.slice(0, -3)];
     piece.setAttribute("id", this.id);
     piece.classList.add("pieces");
     piece.style.backgroundColor = this.color;
@@ -174,14 +176,23 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
           move.style.color = "brown";
           move.textContent = "Player 1 picked up a power up";
         }
-        game.moveHist.push({ piece: null, spec: "powerUp", tile: tileId });
-        game.ptr = game.moveHist.length;
+        if (!game.replayMode) {
+          game.moveHist.push({ piece: null, spec: "powerUp", tile: tileId });
+          game.ptr = game.moveHist.length;
 
-        //printing on history panel
-        if (history.firstChild) {
-          history.insertBefore(move, history.firstChild);
-        } else {
-          history.appendChild(move);
+          //printing on history panel
+          if (history.firstChild) {
+            history.insertBefore(move, history.firstChild);
+          } else {
+            history.appendChild(move);
+          }
+        }
+
+        //detecting collision with wall
+        if (tileId % 8 == 0) {
+          if (this.cannonDirection == "right") return true;
+        } else if (tileId % 8 == 1) {
+          if (this.cannonDirection == "left") return true;
         }
         return false;
       }
@@ -224,7 +235,7 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
         }
       }
       //RICOCHET collision
-      if (firstChild.id.slice(0, -3) == "semiRicochet") {
+      if (firstChild.id.slice(0, -3) == "semiRicochet" || firstChild.id.slice(0,-4)=="semiRicochet") {
         this.deflect.play();
         deflectedTo = firstChild.classList[1];
         //turn logic for "/" this shaped semi ricochet
@@ -252,7 +263,7 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
         }
       }
       //SEMI RICOCHET collision
-      else if (firstChild.id.slice(0, -3) == "ricochet") {
+      else if (firstChild.id.slice(0, -3) == "ricochet" || firstChild.id.slice(0,-4)=="ricochet") {
         this.deflect.play();
         deflectedTo = firstChild.classList[1];
 

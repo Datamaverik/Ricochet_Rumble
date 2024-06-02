@@ -10,7 +10,8 @@ import {
 
 let selectedPiece = "",
   tileId,
-  piceToMove;
+  piceToMove,
+  pieceToAdd;
 
 //generating randomized playable location
 export let positionP1 = {};
@@ -36,6 +37,13 @@ const replay = document.getElementById("replay");
 
 const single = document.getElementById("single");
 const double = document.getElementById("double");
+
+const shop1 = document.getElementById("shop1");
+const shop2 = document.getElementById("shop2");
+const shopDialog = document.getElementById("shopDialog");
+const spellTrans = document.getElementById("spellTrans");
+const spellRico = document.getElementById("spellRico");
+const spellSemi = document.getElementById("spellSemi");
 
 // Get the game board element
 const gameBoard = document.querySelector(".game-board");
@@ -66,18 +74,100 @@ game.initTimers();
 
 //genrating randomized position for power ups
 export let powerUps = [];
-export function setPowerUp(value){
-  powerUps=value;
+export let pul = [];
+export function setPowerUp(value) {
+  powerUps = value;
 }
 PUlocation();
-addPowerUps();
+pul.push(...powerUps);
+addPowerUps(powerUps);
 
 gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
   const newSelectedPiece = e.target.id;
 
+  //disabling the board if the cannon ball is still present
+  const intervalId = setInterval(() => {
+    gameBoard.classList.add("disabled");
+    if (!isCannonBallPresent(gameBoard)) {
+      clearInterval(intervalId);
+      gameBoard.classList.remove("disabled");
+    }
+  }, 500);
+
+  //checking if swap move is to be made
   if (e.target.classList.contains("swapable")) {
     game.swapPiece(newSelectedPiece);
+    //Bot
+    if (game.singlePlayerMode) {
+      const intervalId = setInterval(() => {
+        if (!isCannonBallPresent(gameBoard)) {
+          clearInterval(intervalId);
+          setTimeout(() => {
+            game.botMove();
+            game.removeHighlights(gameBoard);
+          }, 1500);
+        }
+      }, 500);
+    }
+    game.removeHighlights(gameBoard);
+  }
+
+  //checking if new piece is to be added
+  if (e.target.classList.contains("toAdd")) {
+    const history = document.querySelector(".historyPage");
+    let move = document.createElement("p");
+    const tileId = e.target.id;
+    if (game.PlayerToMove == "P1" && piceToMove) {
+      move.style.color = "brown";
+      game.p1PowerUps = 0;
+      document.getElementById("P1meter").value = game.p1PowerUps / 10;
+      game.playSound("move");
+      game.addPiece(pieceToAdd + "B" + "-P1", "brown", tileId);
+      if (pieceToAdd == "semiRicochet") game.P1addRico = true;
+      document.getElementById(pieceToAdd + "B" + "-P1").classList.add("right");
+      if (pieceToAdd == "ricochet") {
+        game.P1addSemi = true;
+        const piece = document.getElementById("ricochetB-P1");
+        piece.style.transform = "scaleY(-1) scaleX(-1)";
+      }
+      game.recordMove(pieceToAdd + "B" + "-P1", null, tileId, "spell");
+    }
+    if (game.PlayerToMove == "P2" && piceToMove) {
+      move.style.color = "#005ed8";
+      game.p2PowerUps = 0;
+      document.getElementById("P2meter").value = game.p2PowerUps / 10;
+      game.playSound("move");
+      game.addPiece(pieceToAdd + "B" + "-P2", "#005ed8", tileId);
+      if (pieceToAdd == "semiRicochet") game.P2addRico = true;
+      if (pieceToAdd == "ricochet") game.P2addSemi = true;
+      document.getElementById(pieceToAdd + "B" + "-P2").classList.add("left");
+      game.recordMove(pieceToAdd + "B" + "-P2", null, tileId, "spell");
+    }
+
+    move.textContent = piceToMove + " was added through spell at " + tileId;
+    history.appendChild(move);
+    //removing highlights
+    Array.from(gameBoard.querySelectorAll(".square")).forEach((sq) => {
+      if (sq.classList.contains("toAdd")) sq.classList.remove("toAdd");
+    });
+
+    // Searching for all the cannons to shoot after move has been made
+    game.pieces.forEach((piece) => {
+      if (piece.id.slice(-2) == game.PlayerToMove) {
+        if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+          game.playSound("shoot");
+          piece.shootCannon();
+        }
+      }
+    });
+
+    //switching timer
+    game.switchTimer();
+
+    //changing player to move
+    game.PlayerToMove = game.PlayerToMove === "P1" ? "P2" : "P1";
+
     //Bot
     if (game.singlePlayerMode) {
       const intervalId = setInterval(() => {
@@ -133,7 +223,9 @@ gameBoard.addEventListener("click", (e) => {
   //making the rotate button visible
   if (
     (newSelectedPiece.slice(0, -3) == "ricochet" ||
-      newSelectedPiece.slice(0, -3) == "semiRicochet") &&
+      newSelectedPiece.slice(0, -3) == "semiRicochet" ||
+      newSelectedPiece.slice(0, -4) == "ricochet" ||
+      newSelectedPiece.slice(0, -4) == "semiRicochet") &&
     newSelectedPiece.slice(-2) == game.PlayerToMove
   ) {
     rotateBtn.style.visibility = "visible";
@@ -143,7 +235,8 @@ gameBoard.addEventListener("click", (e) => {
 
   //making the swap button visible
   if (
-    newSelectedPiece.slice(0, -3) == "semiRicochet" &&
+    (newSelectedPiece.slice(0, -3) == "semiRicochet" ||
+      newSelectedPiece.slice(0, -4) == "semiRicochet") &&
     newSelectedPiece.slice(-2) == game.PlayerToMove
   ) {
     swapBtn.style.visibility = "visible";
@@ -188,6 +281,7 @@ redo.addEventListener("click", () => {
 });
 
 replay.addEventListener("click", () => {
+  game.playSound("click");
   game.replay();
 });
 
@@ -200,12 +294,14 @@ document.documentElement.className = "dark";
 window.onload = () => {
   favDialog.showModal();
   favDialog.style.display = "flex";
+  shopDialog.style.display = "none";
   resumeBtn.disabled = true;
   restartBtn.disabled = true;
 };
 
 //starting the double player mode
 double.addEventListener("click", () => {
+  game.playSound("mode");
   favDialog.close();
   favDialog.style.display = "none";
   restartBtn.disabled = false;
@@ -216,6 +312,7 @@ double.addEventListener("click", () => {
 
 //starting the single player mode
 single.addEventListener("click", () => {
+  game.playSound("mode");
   favDialog.close();
   favDialog.style.display = "none";
   restartBtn.disabled = false;
@@ -226,6 +323,7 @@ single.addEventListener("click", () => {
 
 //Pause screen dialog box
 pauseBtn.addEventListener("click", () => {
+  game.playSound("dialog");
   favDialog.showModal();
   favDialog.style.display = "flex";
   single.style.display = "none";
@@ -233,18 +331,79 @@ pauseBtn.addEventListener("click", () => {
   game.toggleTimer();
 });
 
+//Shop buttons
+shop1.addEventListener("click", () => {
+  game.playSound("shop");
+  if (game.PlayerToMove == "P1") {
+    if (game.P1addRico) spellRico.disabled = true;
+    else spellRico.disabled = false;
+    if (game.P1addSemi) spellSemi.disabled = true;
+    else spellSemi.disabled = false;
+    shopDialog.showModal();
+    shopDialog.style.display = "flex";
+  }
+});
+
+shop2.addEventListener("click", () => {
+  game.playSound("shop");
+  if (game.PlayerToMove == "P2") {
+    if (game.P2addRico) spellRico.disabled = true;
+    else spellRico.disabled = false;
+    if (game.P2addSemi) spellSemi.disabled = true;
+    else spellSemi.disabled = false;
+    shopDialog.showModal();
+    shopDialog.style.display = "flex";
+  }
+});
+
+//passthrough
+spellTrans.addEventListener("click", () => {
+  game.playSound("click");
+  shopDialog.close();
+  shopDialog.style.display = "none";
+});
+
+//Add ricochet
+spellRico.addEventListener("click", () => {
+  game.playSound("click");
+  pieceToAdd = "semiRicochet";
+  shopDialog.close();
+  shopDialog.style.display = "none";
+  Array.from(gameBoard.querySelectorAll(".square")).forEach((sq) => {
+    if (!sq.hasChildNodes()) {
+      sq.classList.add("toAdd");
+    }
+  });
+});
+
+//Add semi ricochet
+spellSemi.addEventListener("click", () => {
+  game.playSound("click");
+  pieceToAdd = "ricochet";
+  shopDialog.close();
+  shopDialog.style.display = "none";
+  Array.from(gameBoard.querySelectorAll(".square")).forEach((sq) => {
+    if (!sq.hasChildNodes()) {
+      sq.classList.add("toAdd");
+    }
+  });
+});
+
 //Restarts the game
 restartBtn.addEventListener("click", () => {
+  game.playSound("click");
   window.location.reload();
 });
 //resumes the game
 resumeBtn.addEventListener("click", () => {
+  game.playSound("click");
   favDialog.close();
   favDialog.style.display = "none";
   game.toggleTimer();
 });
 
 document.getElementById("reset").addEventListener("click", () => {
+  game.playSound("click");
   try {
     localStorage.removeItem("games");
     window.location.reload();

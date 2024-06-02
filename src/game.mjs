@@ -1,4 +1,4 @@
-import { powerUps,setPowerUp } from "../testScript.js";
+import { powerUps, setPowerUp, pul} from "../testScript.js";
 import { PUlocation } from "./utility-function.mjs";
 import Piece from "./piece.mjs";
 import {
@@ -27,10 +27,22 @@ export default class Game {
     this.isGameEnded = false;
     this.p1PowerUps = 0;
     this.p2PowerUps = 0;
+    this.replayMode = false;
+
+    this.P1addRico = false;
+    this.P1addSemi = false;
+    this.P2addRico = false;
+    this.P2addSemi = false;
 
     this.sounds = {
       move: new Audio("./src/sounds/movePiece.wav"),
       shoot: new Audio("./src/sounds/cannon2.wav"),
+      dialog: new Audio("./src/sounds/dialog.wav"),
+      click: new Audio("./src/sounds/click.wav"),
+      shop: new Audio("./src/sounds/shop.wav"),
+      mode: new Audio("./src/sounds/gameMode.wav"),
+      energy: new Audio("./src/sounds/energy.wav"),
+      powerup: new Audio("./src/sounds/powerup.wav"),
     };
   }
 
@@ -106,15 +118,31 @@ export default class Game {
   }
 
   replay() {
+    this.replayMode = true;
     this.resetBoard();
     this.PlayerToMove = "P1";
     document.getElementById("pauseScreen").close();
     document.getElementById("pauseScreen").style.display = "none";
+
     this.disableBoard();
+    document
+      .getElementById("btn-container")
+      .querySelectorAll("button")
+      .forEach((b) => {
+        b.disabled = true;
+      });
+    document
+      .getElementById("moveBtn")
+      .querySelectorAll("button")
+      .forEach((b) => {
+        b.disabled = true;
+      });
+
     this.stopTimer("P1");
     this.stopTimer("P2");
     const hist = JSON.parse(localStorage.getItem("games")) || [];
 
+    console.log(this.pieces);
     // Recursive function to replay moves
     const replayMoves = (i) => {
       if (i >= hist[hist.length - 1].length) {
@@ -124,6 +152,7 @@ export default class Game {
       setTimeout(() => {
         let move = this.moveHist[i];
         let peice = this.pieces.find((p) => p.id == move.piece);
+        // console.log(peice);
 
         if (move.spec == null) {
           this.playSound("move");
@@ -142,9 +171,46 @@ export default class Game {
             peice = this.pieces.find((p) => p.id == move.piece);
             peice.swap(move.to);
           }
-        } else if (move.spec == "powerUp") {
+        } else if (move.spec == "spell") {
+          const piceToMove = move.piece;
+          const player = move.piece.slice(-2);
+          if (player == "P1" && piceToMove) {
+            this.playSound("move");
+            this.addPiece(piceToMove, "brown", move.to);
+            document.getElementById(piceToMove).classList.add("right");
+            if (piceToMove.slice(0, -4) == "ricochet") {
+              const piece = document.getElementById("ricochetB-P1");
+              piece.style.transform = "scaleY(-1) scaleX(-1)";
+            }
+          }
+          if (player == "P2" && piceToMove) {
+            this.playSound("move");
+            this.addPiece(piceToMove, "#005ed8", move.to);
+            document.getElementById(piceToMove).classList.add("left");
+          }
+          this.PlayerToMove = this.PlayerToMove === "P1" ? "P2" : "P1";
+        } else if (move.spec == "powerSpawn") {
+          let pul = [];
+          pul.push(...move.to);
+          this.playSound("energy");
+          pul.forEach((p) => {
+            const sq = document.getElementById(p);
+            if (!sq.hasChildNodes()) {
+              const pU = document.createElement("div");
+              pU.innerHTML = `<svg  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+        	  viewBox="0 0 940.688 940.688"
+        	 xml:space="preserve">
+        <g>
+        	<path d="M885.344,319.071l-258-3.8l-102.7-264.399c-19.8-48.801-88.899-48.801-108.6,0l-102.7,264.399l-258,3.8
+        		c-53.4,3.101-75.1,70.2-33.7,103.9l209.2,181.4l-71.3,247.7c-14,50.899,41.1,92.899,86.5,65.899l224.3-122.7l224.3,122.601
+        		c45.4,27,100.5-15,86.5-65.9l-71.3-247.7l209.2-181.399C960.443,389.172,938.744,322.071,885.344,319.071z"/>
+        </g>
+        </svg>`;
+              pU.classList.add("powerUp");
+              sq.appendChild(pU);
+            }
+          });
         }
-
         // Applying animations to the movement of pieces
         if (peice !== undefined) {
           let diff = move.to - move.from;
@@ -191,11 +257,11 @@ export default class Game {
       }
     });
     addPieces(this);
-    this.p1PowerUps=0;
-    this.p2PowerUps=0;
+    this.p1PowerUps = 0;
+    this.p2PowerUps = 0;
     document.getElementById("P2meter").value = this.p2PowerUps / 10;
     document.getElementById("P1meter").value = this.p1PowerUps / 10;
-    addPowerUps();
+    addPowerUps(pul);
     addClasses();
   }
 
@@ -223,16 +289,21 @@ export default class Game {
       this.ptr--;
       const move = this.moveHist[this.ptr];
       const peice = this.pieces.find((p) => p.id == move.piece);
-      if (move.spec == null) peice.swap(move.from);
-      else if (move.spec == "rotate") {
+      if (move.spec == null) {
+        this.playSound("move");
+        peice.swap(move.from);
+      } else if (move.spec == "rotate") {
+        this.playSound("move");
         peice.rotate();
       } else if (move.spec == "swap") {
+        this.playSound("move");
         peice.swap(move.from);
         this.ptr--;
         const move2 = this.moveHist[this.ptr];
         const peice2 = this.pieces.find((p) => p.id == move2.piece);
         peice2.swap(move2.from);
       } else if (move.spec == "powerUp") {
+        this.playSound('move');
         const powerUp = document.createElement("div");
         powerUp.innerHTML = `<svg  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
 	  viewBox="0 0 940.688 940.688"
@@ -245,6 +316,9 @@ export default class Game {
 </svg>`;
         powerUp.classList.add("powerUp");
         document.getElementById(move.tile).appendChild(powerUp);
+      } else if (move.spec == "spell") {
+        this.playSound("move");
+        peice.element.parentNode.removeChild(peice.element);
       }
     }
   }
@@ -254,19 +328,28 @@ export default class Game {
       const move = this.moveHist[this.ptr];
       this.ptr++;
       const peice = this.pieces.find((p) => p.id == move.piece);
-      if (move.spec == null) peice.swap(move.to);
-      else if (move.spec == "rotate") {
+      if (move.spec == null) {
+        this.playSound("move");
+        peice.swap(move.to);
+      } else if (move.spec == "rotate") {
+        this.playSound("move");
         peice.rotate();
       } else if (move.spec == "swap") {
+        this.playSound("move");
         peice.swap(move.to);
         const move2 = this.moveHist[this.ptr];
         this.ptr++;
         const peice2 = this.pieces.find((p) => p.id == move2.piece);
         peice2.swap(move2.to);
       } else if (move.spec == "powerUp") {
+        this.playSound('move');
         const parent = document.getElementById(move.tile);
         const child = parent.firstChild;
         parent.removeChild(child);
+      } else if (move.spec == "spell") {
+        this.playSound("move");
+        const parent = document.getElementById(move.to);
+        parent.appendChild(peice.element);
       }
     }
     if (this.ptr >= this.moveHist.length) {
@@ -320,9 +403,10 @@ export default class Game {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     //checking if half of time has elasped
-    if (this.timerP1 == 150 || this.timerP2 == 150) {
+    if ((this.timerP1 + this.timerP2)/2==295) {
       setPowerUp([]);
       PUlocation();
+      this.playSound("energy");
       powerUps.forEach((p) => {
         const sq = document.getElementById(p);
         if (!sq.hasChildNodes()) {
@@ -340,6 +424,7 @@ export default class Game {
           sq.appendChild(pU);
         }
       });
+      this.recordMove("powerUps", null, powerUps, "powerSpawn");
     }
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   }
@@ -407,6 +492,7 @@ export default class Game {
       localStorage.setItem("games", JSON.stringify(game));
     } catch (e) {
       if (e.name == "QuotaExceededError") {
+        this.playSound("dialog");
         document.getElementById("pauseScreen").showModal();
         document.getElementById("pauseScreen").style.display = "flex";
         document.getElementById("game-msg").textContent =
@@ -416,6 +502,7 @@ export default class Game {
       }
     }
     document.getElementById("replay").style.display = "block";
+    this.playSound("dialog");
     document.getElementById("pauseScreen").showModal();
     document.getElementById("pauseScreen").style.display = "flex";
     document.getElementById("game-msg").textContent =
@@ -423,6 +510,9 @@ export default class Game {
     document.getElementById("resume").style.display = "none";
     document.getElementById("single").style.display = "none";
     document.getElementById("double").style.display = "none";
+
+    this.stopTimer("P1");
+    this.stopTimer("P2");
   }
 
   createGameBoard() {
@@ -622,7 +712,6 @@ export default class Game {
     if (this.PlayerToMove == selectedPiece.slice(-2)) {
       let pieceToRotate = document.getElementById(selectedPiece);
       let orientation = pieceToRotate.style.transform;
-      // console.log(orientation);
 
       if (pieceToRotate.classList.contains("left")) {
         pieceToRotate.classList.remove("left");

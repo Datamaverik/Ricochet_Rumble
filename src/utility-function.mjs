@@ -356,8 +356,8 @@ function condt(pul) {
   return true;
 }
 
-export function addPowerUps() {
-  powerUps.forEach((p) => {
+export function addPowerUps(pwrUp) {
+  pwrUp.forEach((p) => {
     const powerUp = document.createElement("div");
     powerUp.innerHTML = `<svg  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
 	  viewBox="0 0 940.688 940.688"
@@ -399,7 +399,11 @@ function generatePositionsP2() {
 function checkConditions(positionsP1, positionsP2) {
   return (
     positionsP1.titan + 56 !== positionsP2.cannon &&
+    positionsP1.titan + 57 !== positionsP2.cannon &&
+    positionsP1.titan + 55 !== positionsP2.cannon &&
     positionsP2.titan - 56 !== positionsP1.cannon &&
+    positionsP2.titan - 55 !== positionsP1.cannon &&
+    positionsP2.titan - 57 !== positionsP1.cannon &&
     positionsP1.cannon + 8 !== positionsP1.ricochet &&
     positionsP2.cannon + 8 !== positionsP2.ricochet &&
     positionsP2.titan !== positionsP2.cannon &&

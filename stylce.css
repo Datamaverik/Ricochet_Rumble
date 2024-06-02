@@ -207,7 +207,7 @@ body {
   align-items: center;
 }
 .highlighted,
-.swapable {
+.swapable,.toAdd {
   box-shadow: var(--board-box-shadow);
 }
 .pieces {
@@ -242,12 +242,13 @@ body {
 #shop2 {
   transition: 0.3s ease-in-out;
   display: none;
-  filter:drop-shadow(0px 0px 5px rgb(255, 255, 255));
+  filter: drop-shadow(0px 0px 5px rgb(255, 255, 255));
   margin: 0px 5px 0px 5px;
   border: none;
   border-radius: 5px;
 }
-#shop1:hover,#shop2:hover{
+#shop1:hover,
+#shop2:hover {
   cursor: pointer;
   transform: scale(1.15);
 }
@@ -350,12 +351,16 @@ body {
 #reset:hover,
 #replay:hover,
 #single:hover,
-#double:hover {
+#double:hover,
+#spellRico:hover,
+#spellSemi:hover,
+#spellTrans:hover {
   cursor: pointer;
   transform: scale(1.15);
   filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.856));
 }
-#pauseScreen {
+#pauseScreen,
+#shopDialog {
   max-width: 70vw;
   display: flex;
   flex-direction: column;
@@ -372,7 +377,9 @@ body {
   overflow: hidden;
   text-wrap: wrap;
 }
-#pauseScreen::before {
+
+#pauseScreen::before,
+#shopDialog::before {
   content: "";
   position: absolute;
   top: 0;
@@ -382,13 +389,17 @@ body {
   background-image: url(./src/assets/war-zone.jpg);
   background-position: center;
   background-size: cover;
-  filter: blur(2px);
+  filter: blur(2px) brightness(0.5);
   z-index: -1;
+}
+#shopDialog::before {
+  background-image: url(./src/assets/shop.jpg);
 }
 #game-msg {
   width: auto;
 }
-#pauseScreen::backdrop {
+#pauseScreen::backdrop,
+#shopDialog::backdrop {
   background-color: #0000009d;
   backdrop-filter: blur(3px);
 }
@@ -397,7 +408,10 @@ body {
 #reset,
 #replay,
 #single,
-#double {
+#double,
+#spellRico,
+#spellSemi,
+#spellTrans {
   transition: 0.2s ease-in-out;
   border: none;
   border-radius: 5px;
@@ -413,13 +427,29 @@ body {
   background-color: transparent;
 }
 #resume > svg,
-#restart > svg {
+#restart > svg,
+#spellRico > svg,
+#spellSemi > svg,
+#spellTransh > svg {
   filter: drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.856));
   fill: rgba(255, 255, 255, 0.791);
   pointer-events: none;
   margin: 0px;
   padding: 0px;
   width: min(8vw, 60px);
+}
+#spellRicoSpan > svg,
+#spellSemiSpan > svg,
+#spellTransSpan > svg {
+  filter: drop-shadow(0px 0px 5px white);
+}
+#spellRicoSpan,
+#spellSemiSpan,
+#spellTransSpan {
+  display: flex;
+}
+#shopDialog button{
+  margin: 0.6em;
 }
 #reset,
 #replay {
