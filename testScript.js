@@ -1,6 +1,12 @@
 // script.js
 import Game from "./src/game.mjs";
-import { isCannonBallPresent, addClasses, location,PUlocation, addPowerUps } from "./src/utility-function.mjs";
+import {
+  isCannonBallPresent,
+  addClasses,
+  location,
+  PUlocation,
+  addPowerUps,
+} from "./src/utility-function.mjs";
 
 let selectedPiece = "",
   tileId,
@@ -61,7 +67,8 @@ game.initTimers();
 //genrating randomized position for power ups
 export let powerUps = [];
 PUlocation();
-addPowerUps(gameBoard);
+addPowerUps();
+powerUps=[];
 
 gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;

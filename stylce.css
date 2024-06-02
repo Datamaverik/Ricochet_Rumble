@@ -58,7 +58,8 @@
 }
 
 body {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   margin: 0px;
@@ -115,6 +116,7 @@ body {
   padding: 3px 5px;
   height: 35px;
   width: 35px;
+  margin-bottom: 1vh;
 }
 
 #player-to-move {
@@ -223,9 +225,39 @@ body {
 }
 
 .pieces > svg,
-.cannonball > svg,.powerUp > svg {
+.cannonball > svg,
+.powerUp > svg,
+#shop1 > svg,
+#shop2 > svg {
   pointer-events: none;
   padding: 3px;
+}
+#shop1 > svg,
+#shop2 > svg {
+  filter: var(--filter);
+  height: 25px;
+  width: 25px;
+}
+#shop1,
+#shop2 {
+  transition: 0.3s ease-in-out;
+  display: none;
+  filter:drop-shadow(0px 0px 5px rgb(255, 255, 255));
+  margin: 0px 5px 0px 5px;
+  border: none;
+  border-radius: 5px;
+}
+#shop1:hover,#shop2:hover{
+  cursor: pointer;
+  transform: scale(1.15);
+}
+#shop1 {
+  fill: white;
+  background-color: brown;
+}
+#shop2 {
+  fill: white;
+  background-color: #005ed8;
 }
 
 .cannonball {
@@ -237,9 +269,9 @@ body {
   width: 30px;
 }
 .timer {
-  width: 50px;
+  width: 40px;
   text-align: center;
-  font-size: 40px;
+  font-size: 35px;
   font-family: TickingTimer;
 }
 .timer-container {
@@ -254,7 +286,7 @@ body {
   color: rgb(220, 45, 45);
   border-radius: 5px;
   padding: 3px;
-  font-size: 3vh;
+  font-size: 19px;
   font-weight: bold;
   text-shadow: var(--timer-text-shadow);
   background-color: var(--timer-bgc);
@@ -292,16 +324,17 @@ body {
 .movBtn:hover {
   cursor: pointer;
 }
-.cannonball > svg,.powerUp > svg {
+.cannonball > svg,
+.powerUp > svg {
   fill: rgb(255, 204, 0);
   filter: drop-shadow(0px 0px 3px rgb(255, 225, 144));
-  height: 30px;
-  width: 30px;
+  height: 27px;
+  width: 27px;
   margin: 0px;
   padding: 0px;
 }
 
-.powerUp > svg{
+.powerUp > svg {
   height: 20px;
   width: 20px;
 }
@@ -395,7 +428,8 @@ body {
 #replay {
   display: none;
 }
-#single, #double{
+#single,
+#double {
   font-size: 0.65em;
 }
 #moveBtn {
@@ -403,7 +437,7 @@ body {
   display: flex;
   justify-content: space-around;
 }
-#player-mode{
+#player-mode {
   margin-bottom: 10px;
   width: 100%;
   display: flex;
@@ -413,8 +447,8 @@ body {
 .footer {
   padding: 5px;
   display: flex;
+  position: relative;
   width: 100%;
-  position: fixed;
   justify-content: center;
   bottom: 0px;
 }
@@ -473,7 +507,7 @@ body {
     height: 20px;
     width: 20px;
   }
-  .powerUp > svg{
+  .powerUp > svg {
     height: 18px;
     width: 18px;
   }
@@ -488,7 +522,7 @@ body {
     color: rgb(220, 45, 45);
     border-radius: 5px;
     padding: 3px;
-    font-size: medium;
+    font-size: 15px;
     font-weight: bold;
     text-shadow: var(--timer-text-shadow);
     background-color: var(--timer-bgc);
@@ -520,15 +554,31 @@ body {
   #dialog-container {
     gap: 16vw;
   }
-  .timer {
-    width: 40px;
-    font-size: 30px;
-  }
-  #single,#double,#reset{
+
+  #single,
+  #double,
+  #reset {
     font-size: 0.6em;
   }
-  #player-mode{
+  #player-mode {
     gap: 5vw;
+  }
+  .timer {
+    width: 30px;
+    font-size: 25px;
+  }
+  #rotateBtn,
+  #swapBtn {
+    font-size: 13px;
+  }
+  #shop1 > svg,
+  #shop2 > svg {
+    width: 15px;
+    height: 15px;
+  }
+  #P1meter,
+  #P2meter {
+    width: 60px;
   }
 }
 
@@ -558,7 +608,7 @@ body {
     height: 15px;
     width: 15px;
   }
-  .powerUp > svg{
+  .powerUp > svg {
     height: 13px;
     width: 13px;
   }
@@ -566,12 +616,26 @@ body {
     display: flex;
     flex-direction: column;
   }
-  #resume,
-  #restart {
-    width: 30px;
-    font-size: 0.6em;
+  .timer {
+    width: 25px;
+    font-size: 20px;
   }
-  #single,#double,#reset{
+  #rotateBtn,
+  #swapBtn {
+    font-size: 10px;
+  }
+  #shop1 > svg,
+  #shop2 > svg {
+    width: 10px;
+    height: 10px;
+  }
+  #P1meter,
+  #P2meter {
+    width: 59px;
+  }
+  #single,
+  #double,
+  #reset {
     font-size: 0.6em;
   }
   .historyPage {
@@ -583,6 +647,14 @@ body {
     display: flex;
     flex-direction: column;
     text-align: center;
+  }
+  .footer {
+    position: fixed;
+  }
+  #shop1 > svg,
+  #shop2 > svg {
+    width: 15px;
+    height: 15px;
   }
 }
 

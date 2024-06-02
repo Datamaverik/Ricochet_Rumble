@@ -143,6 +143,14 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
     let deflectedTo = "";
     const targetTile = document.getElementById(tileId);
 
+    //activating shop if powerups is enough
+    if (game.p1PowerUps >= 3)
+      document.getElementById("shop1").style.display = "block";
+    else document.getElementById("shop1").style.display = "none";
+    if (game.p2PowerUps >= 3)
+      document.getElementById("shop2").style.display = "block";
+    else document.getElementById("shop2").style.display = "none";
+
     //Detcting collision with pieces
     if (targetTile && targetTile.hasChildNodes()) {
       const firstChild = targetTile.firstChild;
@@ -158,16 +166,16 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
         if (game.PlayerToMove === "P1") {
           game.p2PowerUps++;
           document.getElementById("P2meter").value = game.p2PowerUps / 10;
-          game.moveHist.push({player:"P2",spec:"powerUp"});
           move.style.color = "#005ed8";
-          move.textContent="Player 2 picked up a power up"
+          move.textContent = "Player 2 picked up a power up";
         } else {
           game.p1PowerUps++;
           document.getElementById("P1meter").value = game.p1PowerUps / 10;
-          game.moveHist.push({ player: "P1", spec: "powerUp" });
           move.style.color = "brown";
           move.textContent = "Player 1 picked up a power up";
         }
+        game.moveHist.push({ piece: null, spec: "powerUp", tile: tileId });
+        game.ptr = game.moveHist.length;
 
         //printing on history panel
         if (history.firstChild) {

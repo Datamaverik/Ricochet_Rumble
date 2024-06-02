@@ -1,4 +1,4 @@
-import { positionP1, positionP2, powerUps } from "../testScript.js";
+import { game, positionP1, positionP2, powerUps } from "../testScript.js";
 
 //toggle the theme from dark to light and vice-versa
 export function changeTheme() {
@@ -340,21 +340,23 @@ function genratePULocation() {
     getRandomInt(17, 48),
     getRandomInt(17, 48),
     getRandomInt(17, 48),
-    getRandomInt(17, 48),
-    getRandomInt(17, 48),
   ];
 }
 
 function condt(pul) {
+  let sum = 0;
   for (let i = 0; i < pul.length - 1; i++) {
+    sum += pul[i];
     for (let j = i + 1; j < pul.length; j++) {
       if (pul[i] === pul[j]) return false;
     }
   }
+  sum=sum-48;
+  if(sum%4==0)return false;
   return true;
 }
 
-export function addPowerUps(gameBoard) {
+export function addPowerUps() {
   powerUps.forEach((p) => {
     const powerUp = document.createElement("div");
     powerUp.innerHTML = `<svg  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -366,8 +368,8 @@ export function addPowerUps(gameBoard) {
 		c45.4,27,100.5-15,86.5-65.9l-71.3-247.7l209.2-181.399C960.443,389.172,938.744,322.071,885.344,319.071z"/>
 </g>
 </svg>`;
-	powerUp.classList.add('powerUp');
-	document.getElementById(p).appendChild(powerUp);
+    powerUp.classList.add("powerUp");
+    document.getElementById(p).appendChild(powerUp);
   });
 }
 

@@ -1,5 +1,12 @@
+import { powerUps } from "../testScript.js";
+import { PUlocation } from "./utility-function.mjs";
 import Piece from "./piece.mjs";
-import { addClasses, addPieces, giveDir } from "./utility-function.mjs";
+import {
+  addClasses,
+  addPieces,
+  giveDir,
+  addPowerUps,
+} from "./utility-function.mjs";
 
 export default class Game {
   constructor(boardSelector) {
@@ -135,29 +142,31 @@ export default class Game {
             peice = this.pieces.find((p) => p.id == move.piece);
             peice.swap(move.to);
           }
+        } else if (move.spec == "powerUp") {
         }
 
         // Applying animations to the movement of pieces
-        let diff = move.to - move.from;
-        let direction = giveDir(diff);
-        peice.element.style.animation = "none";
-        peice.element.offsetHeight; // Trigger reflow
-        peice.element.style.animation = "";
-        peice.element.style.animation = `0.2s ${direction} linear forwards`;
+        if (peice !== undefined) {
+          let diff = move.to - move.from;
+          let direction = giveDir(diff);
+          peice.element.style.animation = "none";
+          peice.element.offsetHeight; // Trigger reflow
+          peice.element.style.animation = "";
+          peice.element.style.animation = `0.2s ${direction} linear forwards`;
 
-        // Searching for all the cannons to shoot after move has been made
-        this.pieces.forEach((piece) => {
-          if (piece.id.slice(-2) == this.PlayerToMove) {
-            if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
-              this.playSound("shoot");
-              piece.shootCannon();
+          // Searching for all the cannons to shoot after move has been made
+          this.pieces.forEach((piece) => {
+            if (piece.id.slice(-2) == this.PlayerToMove) {
+              if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+                this.playSound("shoot");
+                piece.shootCannon();
+              }
             }
-          }
-        });
+          });
 
-        // Setting the playerToMove property for the next move
-        this.PlayerToMove = this.PlayerToMove === "P1" ? "P2" : "P1";
-
+          // Setting the playerToMove property for the next move
+          this.PlayerToMove = this.PlayerToMove === "P1" ? "P2" : "P1";
+        }
         // Recursively call the replay function for the next move
         replayMoves(i + 1);
       }, 1500);
@@ -173,9 +182,17 @@ export default class Game {
       piece.removePieceFromBoard();
     });
     this.pieces = [];
+    Array.from(this.gameBoard.querySelectorAll(".square")).forEach((sq) => {
+      if (sq.firstChild) {
+        if (sq.firstChild.classList.contains("powerUp")) {
+          const child = sq.firstChild;
+          sq.removeChild(child);
+        }
+      }
+    });
     addPieces(this);
+    addPowerUps();
     addClasses();
-    console.log("reset the board");
   }
 
   playSound(sound) {
@@ -211,6 +228,19 @@ export default class Game {
         const move2 = this.moveHist[this.ptr];
         const peice2 = this.pieces.find((p) => p.id == move2.piece);
         peice2.swap(move2.from);
+      } else if (move.spec == "powerUp") {
+        const powerUp = document.createElement("div");
+        powerUp.innerHTML = `<svg  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	  viewBox="0 0 940.688 940.688"
+	 xml:space="preserve">
+<g>
+	<path d="M885.344,319.071l-258-3.8l-102.7-264.399c-19.8-48.801-88.899-48.801-108.6,0l-102.7,264.399l-258,3.8
+		c-53.4,3.101-75.1,70.2-33.7,103.9l209.2,181.4l-71.3,247.7c-14,50.899,41.1,92.899,86.5,65.899l224.3-122.7l224.3,122.601
+		c45.4,27,100.5-15,86.5-65.9l-71.3-247.7l209.2-181.399C960.443,389.172,938.744,322.071,885.344,319.071z"/>
+</g>
+</svg>`;
+        powerUp.classList.add("powerUp");
+        document.getElementById(move.tile).appendChild(powerUp);
       }
     }
   }
@@ -229,6 +259,10 @@ export default class Game {
         this.ptr++;
         const peice2 = this.pieces.find((p) => p.id == move2.piece);
         peice2.swap(move2.to);
+      } else if (move.spec == "powerUp") {
+        const parent = document.getElementById(move.tile);
+        const child = parent.firstChild;
+        parent.removeChild(child);
       }
     }
     if (this.ptr >= this.moveHist.length) {
@@ -281,6 +315,27 @@ export default class Game {
   formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
+    //checking if half of time has elasped
+    if (this.timerP1 == 100 || this.timerP2 == 100) {
+      PUlocation();
+      powerUps.forEach((p) => {
+        const sq = document.getElementById(p);
+        if (!sq.hasChildNodes()) {
+          const pU = document.createElement("div");
+          pU.innerHTML = `<svg  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	  viewBox="0 0 940.688 940.688"
+	 xml:space="preserve">
+<g>
+	<path d="M885.344,319.071l-258-3.8l-102.7-264.399c-19.8-48.801-88.899-48.801-108.6,0l-102.7,264.399l-258,3.8
+		c-53.4,3.101-75.1,70.2-33.7,103.9l209.2,181.4l-71.3,247.7c-14,50.899,41.1,92.899,86.5,65.899l224.3-122.7l224.3,122.601
+		c45.4,27,100.5-15,86.5-65.9l-71.3-247.7l209.2-181.399C960.443,389.172,938.744,322.071,885.344,319.071z"/>
+</g>
+</svg>`;
+          pU.classList.add("powerUp");
+          sq.appendChild(pU);
+        }
+      });
+    }
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   }
 
@@ -537,6 +592,10 @@ export default class Game {
               square.classList.remove("highlighted");
             }
         });
+        if (square.firstChild) {
+          if (square.firstChild.classList.contains("powerUp"))
+            square.classList.remove("highlighted");
+        }
       });
     }
   }
