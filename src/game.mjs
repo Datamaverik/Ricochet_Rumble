@@ -1,4 +1,4 @@
-import { powerUps } from "../testScript.js";
+import { powerUps,setPowerUp } from "../testScript.js";
 import { PUlocation } from "./utility-function.mjs";
 import Piece from "./piece.mjs";
 import {
@@ -191,6 +191,10 @@ export default class Game {
       }
     });
     addPieces(this);
+    this.p1PowerUps=0;
+    this.p2PowerUps=0;
+    document.getElementById("P2meter").value = this.p2PowerUps / 10;
+    document.getElementById("P1meter").value = this.p1PowerUps / 10;
     addPowerUps();
     addClasses();
   }
@@ -316,7 +320,8 @@ export default class Game {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     //checking if half of time has elasped
-    if (this.timerP1 == 100 || this.timerP2 == 100) {
+    if (this.timerP1 == 150 || this.timerP2 == 150) {
+      setPowerUp([]);
       PUlocation();
       powerUps.forEach((p) => {
         const sq = document.getElementById(p);

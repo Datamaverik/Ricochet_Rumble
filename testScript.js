@@ -66,9 +66,11 @@ game.initTimers();
 
 //genrating randomized position for power ups
 export let powerUps = [];
+export function setPowerUp(value){
+  powerUps=value;
+}
 PUlocation();
 addPowerUps();
-powerUps=[];
 
 gameBoard.addEventListener("click", (e) => {
   playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
