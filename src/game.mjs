@@ -1,4 +1,4 @@
-import { powerUps, setPowerUp, pul} from "../testScript.js";
+import { powerUps, setPowerUp, pul } from "../testScript.js";
 import { PUlocation } from "./utility-function.mjs";
 import Piece from "./piece.mjs";
 import {
@@ -33,6 +33,7 @@ export default class Game {
     this.P1addSemi = false;
     this.P2addRico = false;
     this.P2addSemi = false;
+    this.teleport = false;
 
     this.sounds = {
       move: new Audio("./src/sounds/movePiece.wav"),
@@ -42,7 +43,8 @@ export default class Game {
       shop: new Audio("./src/sounds/shop.wav"),
       mode: new Audio("./src/sounds/gameMode.wav"),
       energy: new Audio("./src/sounds/energy.wav"),
-      powerup: new Audio("./src/sounds/powerup.wav"),
+      powerup: new Audio("./src/sounds/powerup.mp3"),
+      teleport: new Audio("./src/sounds/teleport.wav"),
     };
   }
 
@@ -312,7 +314,7 @@ export default class Game {
         const peice2 = this.pieces.find((p) => p.id == move2.piece);
         peice2.swap(move2.from);
       } else if (move.spec == "powerUp") {
-        this.playSound('move');
+        this.playSound("move");
         const powerUp = document.createElement("div");
         powerUp.innerHTML = `<svg  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
 	  viewBox="0 0 940.688 940.688"
@@ -351,7 +353,7 @@ export default class Game {
         const peice2 = this.pieces.find((p) => p.id == move2.piece);
         peice2.swap(move2.to);
       } else if (move.spec == "powerUp") {
-        this.playSound('move');
+        this.playSound("move");
         const parent = document.getElementById(move.tile);
         const child = parent.firstChild;
         parent.removeChild(child);
@@ -412,7 +414,7 @@ export default class Game {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     //checking if half of time has elasped
-    if ((this.timerP1 + this.timerP2)/2==150) {
+    if ((this.timerP1 + this.timerP2) / 2 == 150) {
       setPowerUp([]);
       PUlocation();
       this.playSound("energy");
@@ -519,6 +521,7 @@ export default class Game {
     document.getElementById("resume").style.display = "none";
     document.getElementById("single").style.display = "none";
     document.getElementById("double").style.display = "none";
+    document.getElementById("restart").style.display = "flex";
 
     this.stopTimer("P1");
     this.stopTimer("P2");
@@ -598,6 +601,25 @@ export default class Game {
           square.classList.remove("highlighted");
         }
       });
+      //checking if the teleportation mode is on or not
+      if (this.teleport && selectedPiece.slice(0, -3) !== "cannon") {
+        this.playSound("teleport");
+        Array.from(this.gameBoard.querySelectorAll(".square")).forEach((sq) => {
+          if (!sq.hasChildNodes()) {
+            sq.classList.add("highlighted");
+          }
+        });
+        this.teleport = false;
+        if (this.PlayerToMove == "P1") {
+          this.p1PowerUps = 0;
+          document.getElementById("P1meter").value = this.p1PowerUps / 10;
+          document.getElementById("shop1").style.display = "none";
+        } else if (this.PlayerToMove == "P2") {
+          this.p2PowerUps = 0;
+          document.getElementById("P2meter").value = this.p2PowerUps / 10;
+          document.getElementById("shop2").style.display = "none";
+        }
+      }
 
       //different movement logic for cannon
       if (selectedPiece.slice(0, -3) == "cannon") {
@@ -713,6 +735,11 @@ export default class Game {
     Array.from(board.querySelectorAll(".pieces")).forEach((piece) => {
       if (piece.classList.contains("swapable")) {
         piece.classList.remove("swapable");
+      }
+    });
+    Array.from(board.querySelectorAll(".square")).forEach((piece) => {
+      if (piece.classList.contains("toAdd")) {
+        piece.classList.remove("toAdd");
       }
     });
   }

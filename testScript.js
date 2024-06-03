@@ -88,8 +88,8 @@ gameBoard.addEventListener("click", (e) => {
 
   //disabling the board if the cannon ball is still present
   const intervalId = setInterval(() => {
-    rotateBtn.disabled=true;
-    swapBtn.disabled=true;
+    rotateBtn.disabled = true;
+    swapBtn.disabled = true;
     gameBoard.classList.add("disabled");
     if (!isCannonBallPresent(gameBoard)) {
       clearInterval(intervalId);
@@ -112,6 +112,7 @@ gameBoard.addEventListener("click", (e) => {
             game.removeHighlights(gameBoard);
           }, 1500);
         }
+        playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
       }, 500);
     }
     game.removeHighlights(gameBoard);
@@ -184,6 +185,7 @@ gameBoard.addEventListener("click", (e) => {
         }
       }, 500);
     }
+    playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
     game.removeHighlights(gameBoard);
   }
 
@@ -218,6 +220,7 @@ gameBoard.addEventListener("click", (e) => {
               game.removeHighlights(gameBoard);
             }, 1500);
           }
+          playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
         }, 500);
       }
       game.removeHighlights(gameBoard);
@@ -251,6 +254,7 @@ gameBoard.addEventListener("click", (e) => {
 });
 
 rotateBtn.addEventListener("click", () => {
+  game.teleport=false;
   game.rotatePiece(selectedPiece, gameBoard);
   //Bot
   if (game.singlePlayerMode) {
@@ -262,24 +266,27 @@ rotateBtn.addEventListener("click", () => {
           game.removeHighlights(gameBoard);
         }, 1500);
       }
+      playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
     }, 500);
   }
   swapBtn.style.visibility = "hidden";
-  playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
 });
 
 swapBtn.addEventListener("click", () => {
+  game.teleport=false;
   game.removeHighlights(gameBoard);
   rotateBtn.style.visibility = "hidden";
   game.highlightSwapables(gameBoard, selectedPiece);
 });
 
 undo.addEventListener("click", () => {
+  game.teleport=false;
   game.removeHighlights(gameBoard);
   game.undoMove();
 });
 
 redo.addEventListener("click", () => {
+  game.teleport=false;
   game.removeHighlights(gameBoard);
   game.redoMove();
 });
@@ -296,11 +303,16 @@ document.documentElement.className = "dark";
 
 //starting the timer for P1 as game starts
 window.onload = () => {
+  game.playSound("dialog");
+  document.getElementById("game-msg").textContent =
+    "Welcome to Ricochet Rumble, Select your game mode";
   favDialog.showModal();
   favDialog.style.display = "flex";
   shopDialog.style.display = "none";
   resumeBtn.disabled = true;
   restartBtn.disabled = true;
+  resumeBtn.style.display = "none";
+  restartBtn.style.display = "none";
 };
 
 //starting the double player mode
@@ -328,7 +340,10 @@ single.addEventListener("click", () => {
 
 //Pause screen dialog box
 pauseBtn.addEventListener("click", () => {
+  game.teleport=false;
   game.playSound("dialog");
+  resumeBtn.style.display = "flex";
+  restartBtn.style.display = "flex";
   favDialog.showModal();
   favDialog.style.display = "flex";
   single.style.display = "none";
@@ -361,9 +376,11 @@ shop2.addEventListener("click", () => {
   }
 });
 
-//passthrough
+//teleportation
 spellTrans.addEventListener("click", () => {
   game.playSound("click");
+  game.removeHighlights(gameBoard);
+  game.teleport = true;
   shopDialog.close();
   shopDialog.style.display = "none";
 });
@@ -371,6 +388,7 @@ spellTrans.addEventListener("click", () => {
 //Add ricochet
 spellRico.addEventListener("click", () => {
   game.playSound("click");
+  game.teleport = false;
   pieceToAdd = "semiRicochet";
   shopDialog.close();
   shopDialog.style.display = "none";
@@ -384,6 +402,7 @@ spellRico.addEventListener("click", () => {
 //Add semi ricochet
 spellSemi.addEventListener("click", () => {
   game.playSound("click");
+  game.teleport = false;
   pieceToAdd = "ricochet";
   shopDialog.close();
   shopDialog.style.display = "none";
