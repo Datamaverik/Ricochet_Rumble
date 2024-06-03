@@ -34,6 +34,7 @@ export default class Game {
     this.P2addRico = false;
     this.P2addSemi = false;
     this.teleport = false;
+    this.setTrap = false;
 
     this.sounds = {
       move: new Audio("./src/sounds/movePiece.wav"),
@@ -45,6 +46,8 @@ export default class Game {
       energy: new Audio("./src/sounds/energy.wav"),
       powerup: new Audio("./src/sounds/powerup.mp3"),
       teleport: new Audio("./src/sounds/teleport.wav"),
+      destroy: new Audio("./src/sounds/destroy.mp3"),
+      deflect: new Audio("./src/sounds/deflect.wav"),
     };
   }
 
@@ -144,7 +147,6 @@ export default class Game {
     this.stopTimer("P2");
     const hist = JSON.parse(localStorage.getItem("games")) || [];
 
-    console.log(this.pieces);
     // Recursive function to replay moves
     const replayMoves = (i) => {
       if (i >= hist[hist.length - 1].length) {
@@ -221,6 +223,9 @@ export default class Game {
               sq.appendChild(pU);
             }
           });
+        } else if (move.spec == "destroy") {
+          this.playSound("destroy", 0.6);
+          peice.element.parentNode.removeChild(peice.element);
         }
         // Applying animations to the movement of pieces
         if (peice !== undefined) {
@@ -276,9 +281,10 @@ export default class Game {
     addClasses();
   }
 
-  playSound(sound) {
+  playSound(sound, vol = 1) {
     if (this.sounds[sound]) {
       const soundClone = this.sounds[sound].cloneNode();
+      soundClone.volume = vol;
       soundClone.play();
     }
   }
@@ -330,6 +336,9 @@ export default class Game {
       } else if (move.spec == "spell") {
         this.playSound("move");
         peice.element.parentNode.removeChild(peice.element);
+      } else if (move.spec == "destroy") {
+        this.playSound("move");
+        peice.addPieceToBoard(this.gameBoard, move.from);
       }
     }
   }
@@ -361,6 +370,9 @@ export default class Game {
         this.playSound("move");
         const parent = document.getElementById(move.to);
         parent.appendChild(peice.element);
+      } else if (move.spec == "destroy") {
+        this.playSound("destroy", 0.6);
+        peice.element.parentNode.removeChild(peice.element);
       }
     }
     if (this.ptr >= this.moveHist.length) {
@@ -414,7 +426,10 @@ export default class Game {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     //checking if half of time has elasped
-    if ((this.timerP1 + this.timerP2) / 2 == 150) {
+    if (
+      (this.timerP1 + this.timerP2) / 2 == 100 ||
+      (this.timerP1 + this.timerP2) / 2 == 200
+    ) {
       setPowerUp([]);
       PUlocation();
       this.playSound("energy");
@@ -554,6 +569,25 @@ export default class Game {
   movePiece(selectedPieceId, targetTileId) {
     const piece = this.pieces.find((piece) => piece.id === selectedPieceId);
     if (piece && this.PlayerToMove == selectedPieceId.slice(-2)) {
+      //checking if a trap is laid or not
+      let player;
+      this.PlayerToMove == "P1" ? (player = "P2") : (player = "P1");
+      if (
+        document
+          .getElementById(targetTileId)
+          .classList.contains("trap" + player)
+      ) {
+        this.showBlastAnimation(targetTileId);
+        this.playSound("destroy", 0.6);
+        document.getElementById(targetTileId).classList.remove("trap" + player);
+        console.log("from = " + this.from);
+        console.log("to = " + targetTileId);
+        this.recordMove(selectedPieceId, this.from, targetTileId, "destroy");
+        piece.element.parentNode.removeChild(piece.element);
+        this.switchTimer();
+        this.PlayerToMove = this.PlayerToMove === "P1" ? "P2" : "P1";
+        return;
+      }
       this.to = targetTileId;
       this.recordMove(selectedPieceId, this.from, this.to, null);
       this.printMoveHist(selectedPieceId, this.from, this.to);
@@ -731,15 +765,16 @@ export default class Game {
       if (square.classList.contains("highlighted")) {
         square.classList.remove("highlighted");
       }
+      if (square.classList.contains("toAdd")) {
+        square.classList.remove("toAdd");
+      }
+      if (square.classList.contains("toTrap")) {
+        square.classList.remove("toTrap");
+      }
     });
     Array.from(board.querySelectorAll(".pieces")).forEach((piece) => {
       if (piece.classList.contains("swapable")) {
         piece.classList.remove("swapable");
-      }
-    });
-    Array.from(board.querySelectorAll(".square")).forEach((piece) => {
-      if (piece.classList.contains("toAdd")) {
-        piece.classList.remove("toAdd");
       }
     });
   }
@@ -843,5 +878,19 @@ export default class Game {
       )
         p.classList.add("swapable");
     });
+  }
+
+  showBlastAnimation(tileId) {
+    const tile = document.getElementById(tileId);
+    if (tile) {
+      const blastAnimation = document.createElement("video");
+      blastAnimation.className = "blast-animation";
+      blastAnimation.src = "./src/assets/destroy.mp4"; 
+      blastAnimation.autoplay = true;
+      blastAnimation.onended = () => {
+        tile.removeChild(blastAnimation);
+      };
+      tile.appendChild(blastAnimation);
+    }
   }
 }

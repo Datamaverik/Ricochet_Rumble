@@ -44,6 +44,7 @@ const shopDialog = document.getElementById("shopDialog");
 const spellTrans = document.getElementById("spellTrans");
 const spellRico = document.getElementById("spellRico");
 const spellSemi = document.getElementById("spellSemi");
+const spellTrap = document.getElementById("spellTrap");
 
 // Get the game board element
 const gameBoard = document.querySelector(".game-board");
@@ -189,6 +190,55 @@ gameBoard.addEventListener("click", (e) => {
     game.removeHighlights(gameBoard);
   }
 
+  //setting trap
+  if (
+    game.setTrap &&
+    !e.target.hasChildNodes() &&
+    parseInt(e.target.id) > 8 &&
+    parseInt(e.target.id) < 57
+  ) {
+    game.playSound("move");
+    e.target.classList.add("trap" + game.PlayerToMove);
+    if (game.PlayerToMove == "P1") {
+      game.p1PowerUps = 0;
+      document.getElementById("P1meter").value = game.p1PowerUps / 10;
+    } else {
+      game.p2PowerUps = 0;
+      document.getElementById("P2meter").value = game.p2PowerUps / 10;
+    }
+    game.setTrap = false;
+    // Searching for all the cannons to shoot after move has been made
+    game.pieces.forEach((piece) => {
+      if (piece.id.slice(-2) == game.PlayerToMove) {
+        if (piece.id.substring(0, piece.id.length - 3) == "cannon") {
+          game.playSound("shoot");
+          piece.shootCannon();
+        }
+      }
+    });
+
+    //switching timer
+    game.switchTimer();
+
+    //changing player to move
+    game.PlayerToMove = game.PlayerToMove === "P1" ? "P2" : "P1";
+
+    //Bot
+    if (game.singlePlayerMode) {
+      const intervalId = setInterval(() => {
+        if (!isCannonBallPresent(gameBoard)) {
+          clearInterval(intervalId);
+          setTimeout(() => {
+            game.botMove();
+            game.removeHighlights(gameBoard);
+          }, 1500);
+        }
+      }, 500);
+    }
+    playerToMove.textContent = "Player to Move: " + game.PlayerToMove;
+    game.removeHighlights(gameBoard);
+  }
+
   if (game.singlePlayerMode && newSelectedPiece.slice(-2) == "P2") {
     return;
   }
@@ -254,7 +304,8 @@ gameBoard.addEventListener("click", (e) => {
 });
 
 rotateBtn.addEventListener("click", () => {
-  game.teleport=false;
+  game.teleport = false;
+  game.setTrap = false;
   game.rotatePiece(selectedPiece, gameBoard);
   //Bot
   if (game.singlePlayerMode) {
@@ -273,20 +324,23 @@ rotateBtn.addEventListener("click", () => {
 });
 
 swapBtn.addEventListener("click", () => {
-  game.teleport=false;
+  game.teleport = false;
+  game.setTrap = false;
   game.removeHighlights(gameBoard);
   rotateBtn.style.visibility = "hidden";
   game.highlightSwapables(gameBoard, selectedPiece);
 });
 
 undo.addEventListener("click", () => {
-  game.teleport=false;
+  game.teleport = false;
+  game.setTrap = false;
   game.removeHighlights(gameBoard);
   game.undoMove();
 });
 
 redo.addEventListener("click", () => {
-  game.teleport=false;
+  game.teleport = false;
+  game.setTrap = false;
   game.removeHighlights(gameBoard);
   game.redoMove();
 });
@@ -340,7 +394,8 @@ single.addEventListener("click", () => {
 
 //Pause screen dialog box
 pauseBtn.addEventListener("click", () => {
-  game.teleport=false;
+  game.teleport = false;
+  game.setTrap = false;
   game.playSound("dialog");
   resumeBtn.style.display = "flex";
   restartBtn.style.display = "flex";
@@ -381,6 +436,7 @@ spellTrans.addEventListener("click", () => {
   game.playSound("click");
   game.removeHighlights(gameBoard);
   game.teleport = true;
+  game.setTrap = false;
   shopDialog.close();
   shopDialog.style.display = "none";
 });
@@ -389,6 +445,8 @@ spellTrans.addEventListener("click", () => {
 spellRico.addEventListener("click", () => {
   game.playSound("click");
   game.teleport = false;
+  game.setTrap = false;
+  game.removeHighlights(gameBoard);
   pieceToAdd = "semiRicochet";
   shopDialog.close();
   shopDialog.style.display = "none";
@@ -403,6 +461,8 @@ spellRico.addEventListener("click", () => {
 spellSemi.addEventListener("click", () => {
   game.playSound("click");
   game.teleport = false;
+  game.setTrap = false;
+  game.removeHighlights(gameBoard);
   pieceToAdd = "ricochet";
   shopDialog.close();
   shopDialog.style.display = "none";
@@ -411,6 +471,21 @@ spellSemi.addEventListener("click", () => {
       sq.classList.add("toAdd");
     }
   });
+});
+
+//Add traps
+spellTrap.addEventListener("click", () => {
+  game.playSound("click");
+  game.teleport = false;
+  game.setTrap = true;
+  game.removeHighlights(gameBoard);
+  Array.from(gameBoard.querySelectorAll(".square")).forEach((sq) => {
+    if (!sq.hasChildNodes() && parseInt(sq.id) < 57 && parseInt(sq.id) > 8) {
+      sq.classList.add("toTrap");
+    }
+  });
+  shopDialog.close();
+  shopDialog.style.display = "none";
 });
 
 //Restarts the game

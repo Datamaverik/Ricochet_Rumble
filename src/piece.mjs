@@ -8,8 +8,6 @@ export default class Piece {
     this.element = null;
     this.timeOutIds = [];
     this.cannonDirection = "down";
-    this.deflect = new Audio("./src/sounds/deflect.wav");
-    this.power = new Audio("./src/sounds/powerup.mp3");
   }
 
   addPieceToBoard(board, tileId) {
@@ -159,8 +157,7 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
 
       //checking if the first child is power up or not
       if (firstChild.classList.contains("powerUp")) {
-        const soundClone = this.power.cloneNode();
-        soundClone.play();
+        game.playSound("powerup");
         const history = document.querySelector(".historyPage");
         const move = document.createElement("p");
         firstChild.parentNode.removeChild(firstChild);
@@ -200,6 +197,8 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
       if (firstChild.classList.contains("pieces")) {
         //TITAN collision
         if (firstChild.id.slice(0, -3) == "titan") {
+          game.showBlastAnimation(tileId);
+          game.playSound("destroy", 0.7);
           let playerWon;
           if (firstChild.id.slice(-2) == "P1") playerWon = "P2";
           else playerWon = "P1";
@@ -221,7 +220,7 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
             if (tileId % 8 == 0) return true;
             else return false;
           } else {
-            this.deflect.play();
+            game.playSound("deflect");
             return true;
           }
         }
@@ -230,13 +229,16 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
           firstChild.id.slice(0, -3) == "cannon" ||
           firstChild.id.slice(0 - 3) == "tank"
         ) {
-          this.deflect.play();
+          game.playSound("deflect");
           return true;
         }
       }
       //RICOCHET collision
-      if (firstChild.id.slice(0, -3) == "semiRicochet" || firstChild.id.slice(0,-4)=="semiRicochet") {
-        this.deflect.play();
+      if (
+        firstChild.id.slice(0, -3) == "semiRicochet" ||
+        firstChild.id.slice(0, -4) == "semiRicochet"
+      ) {
+        game.playSound("deflect");
         deflectedTo = firstChild.classList[1];
         //turn logic for "/" this shaped semi ricochet
         if (
@@ -263,8 +265,11 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
         }
       }
       //SEMI RICOCHET collision
-      else if (firstChild.id.slice(0, -3) == "ricochet" || firstChild.id.slice(0,-4)=="ricochet") {
-        this.deflect.play();
+      else if (
+        firstChild.id.slice(0, -3) == "ricochet" ||
+        firstChild.id.slice(0, -4) == "ricochet"
+      ) {
+        game.playSound("deflect");
         deflectedTo = firstChild.classList[1];
 
         if (deflectedTo == "left" && selectedPiece == "P1") {
@@ -272,6 +277,8 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
           else if (this.cannonDirection == "right")
             this.cannonDirection = "down";
           else {
+            game.showBlastAnimation(tileId);
+            game.playSound("destroy",0.6);
             firstChild.parentNode.removeChild(firstChild);
             return true;
           }
@@ -279,6 +286,8 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
           if (this.cannonDirection == "left") this.cannonDirection = "down";
           else if (this.cannonDirection == "up") this.cannonDirection = "right";
           else {
+            game.showBlastAnimation(tileId);
+            game.playSound("destroy",0.6);
             firstChild.parentNode.removeChild(firstChild);
             return true;
           }
@@ -286,6 +295,8 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
           if (this.cannonDirection == "down") this.cannonDirection = "left";
           else if (this.cannonDirection == "right") this.cannonDirection = "up";
           else {
+            game.showBlastAnimation(tileId);
+            game.playSound("destroy",0.6);
             firstChild.parentNode.removeChild(firstChild);
             return true;
           }
@@ -293,6 +304,8 @@ Created by potrace 1.15, written by Peter Selinger 2001-2017
           if (this.cannonDirection == "down") this.cannonDirection = "right";
           else if (this.cannonDirection == "left") this.cannonDirection = "up";
           else {
+            game.showBlastAnimation(tileId);
+            game.playSound("destroy",0.6);
             firstChild.parentNode.removeChild(firstChild);
             return true;
           }
