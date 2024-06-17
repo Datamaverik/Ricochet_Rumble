@@ -72,8 +72,8 @@ body {
 
 .navbar,
 .footer {
-  display: flex;
   background-color: var(--navbar-bg);
+  display: flex;
   padding: 10px;
   margin-bottom: 0px;
   color: var(--base-color);
@@ -384,11 +384,11 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url(./src/assets/war-zone.jpg);
   background-position: center;
   background-size: cover;
   filter: blur(2px) brightness(0.5);
   z-index: -1;
+  background-image: url(./src/assets/war-zone.jpg);
 }
 #shopDialog::before {
   background-image: url(./src/assets/shop.jpg);
